@@ -22,6 +22,11 @@
   "menuColor": "default",
   "menuAccent": "subtle",
   "registries": {
-    "@shadcnblocks": "https://www.shadcnblocks.com/r/{name}"
+    "@shadcnblocks": {
+      "url": "https://www.shadcnblocks.com/r/{name}",
+      "headers": {
+        "Authorization": "Bearer ${SHADCNBLOCKS_TOKEN}"
+      }
+    }
   }
 }

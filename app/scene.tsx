@@ -1,101 +1,119 @@
 "use client";
 import {useEffect,useRef} from 'react';
 import * as THREE from 'three';
-import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 import gsap from 'gsap';
 import {ScrollTrigger} from 'gsap/ScrollTrigger';
-type Props={view:number;onReady:()=>void;onUnavailable:()=>void};
-export default function ArchitectureScene({view,onReady,onUnavailable}:Props){
- const canvas=useRef<HTMLCanvasElement>(null),change=useRef<(()=>void)|null>(null),last=useRef(view);
- const ready=useRef(onReady),unavailable=useRef(onUnavailable);ready.current=onReady;unavailable.current=onUnavailable;
- useEffect(()=>{if(view!==last.current){last.current=view;change.current?.()}},[view]);
+type Props={command:{step:number;id:number};onPhase:(n:number)=>void;onReady:()=>void;onUnavailable:()=>void};
+export default function ArchitectureScene({command,onPhase,onReady,onUnavailable}:Props){
+ const canvas=useRef<HTMLCanvasElement>(null),select=useRef<((n:number)=>void)|null>(null),cb=useRef({onPhase,onReady,onUnavailable});cb.current={onPhase,onReady,onUnavailable};
+ useEffect(()=>{if(command.id)select.current?.(command.step)},[command]);
  useEffect(()=>{
-  const element=canvas.current;if(!element)return;
-  let renderer:THREE.WebGLRenderer;try{renderer=new THREE.WebGLRenderer({canvas:element,alpha:true,antialias:true,powerPreference:'low-power',preserveDrawingBuffer:true})}catch{unavailable.current();return}
-  gsap.registerPlugin(ScrollTrigger);const reduced=matchMedia('(prefers-reduced-motion:reduce)'),mobile=matchMedia('(max-width:700px)');
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
-  const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-20,20,8,-8,.1,150);camera.position.set(15,10,29);camera.lookAt(0,3.0,0);
-  const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment(),env=pmrem.fromScene(room,.05);scene.environment=env.texture;scene.environmentIntensity=.35;room.dispose();pmrem.dispose();
-  scene.add(new THREE.HemisphereLight(0xffffff,0x858174,2.0));const sun=new THREE.DirectionalLight(0xfff9ed,3.3);sun.position.set(-12,23,16);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-20,right:20,top:20,bottom:-20,near:.5,far:65});sun.shadow.bias=-.0003;sun.shadow.normalBias=.025;sun.shadow.radius=4;scene.add(sun);const fill=new THREE.DirectionalLight(0xeef3ff,.8);fill.position.set(17,10,-12);scene.add(fill);
-  const stone=new THREE.MeshStandardMaterial({color:0xcac4b5,roughness:.88});
-  const trim=new THREE.MeshStandardMaterial({color:0xe2ded3,roughness:.78});
-  const shadowStone=new THREE.MeshStandardMaterial({color:0xaba697,roughness:.9});
-  const roofMat=new THREE.MeshStandardMaterial({color:0x69534a,metalness:.42,roughness:.53});
-  const seamMat=new THREE.LineBasicMaterial({color:0x493e39});
-  const glass=new THREE.MeshPhysicalMaterial({color:0x3b4542,metalness:.36,roughness:.18,envMapIntensity:.9});
-  const iron=new THREE.MeshStandardMaterial({color:0x393e37,roughness:.65,metalness:.3});
-  const baseMat=new THREE.MeshStandardMaterial({color:0xe9e7df,roughness:1});
-  const model=new THREE.Group();scene.add(model);const house=new THREE.Group();model.add(house);
-  const geometries:THREE.BufferGeometry[]=[],cache=new Map<string,THREE.BufferGeometry>();
-  const geom=(key:string,create:()=>THREE.BufferGeometry)=>{let g=cache.get(key);if(!g){g=create();cache.set(key,g);geometries.push(g)}return g};
-  function box(parent:THREE.Object3D,w:number,h:number,d:number,x:number,y:number,z:number,material:THREE.Material=trim){const g=geom(`b${w},${h},${d}`,()=>new THREE.BoxGeometry(w,h,d));const m=new THREE.Mesh(g,material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
-  function cylinder(parent:THREE.Object3D,rt:number,rb:number,h:number,x:number,y:number,z:number,mat:THREE.Material=trim,segments=16){const g=geom(`c${rt},${rb},${h},${segments}`,()=>new THREE.CylinderGeometry(rt,rb,h,segments));const m=new THREE.Mesh(g,mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
-  // Solid masses, coursed masonry, raised end pavilions and central risalit.
-  box(model,23,.25,12.3,0,-.28,.3,baseMat);box(model,22.2,.13,11.5,0,-.10,.3,trim);
-  box(house,18.7,.55,6.9,0,.26,0,shadowStone);
-  box(house,18.3,5.8,6.2,0,3.43,0,stone);
-  box(house,4.8,5.93,7.0,0,3.47,.30,stone);
-  for(const x of [-6.75,6.75])box(house,4.8,5.90,6.8,x,3.46,.13,stone);
-  const fronts=[{x:0,w:4.9,z:3.86},{x:-6.75,w:4.92,z:3.59},{x:6.75,w:4.92,z:3.59},{x:-3.48,w:2.03,z:3.15},{x:3.48,w:2.03,z:3.15}];
-  for(const f of fronts){
-   for(const[y,h,d]of [[.56,.13,.15],[3.10,.14,.18],[3.27,.09,.25],[6.28,.15,.26],[6.43,.11,.38],[6.52,.07,.46]])box(house,f.w,h,d,f.x,y,f.z,trim);
-   for(let y=.85;y<3;y+=.27)box(house,f.w,.018,.014,f.x,y,f.z-.042,shadowStone);
-   for(const side of [-1,1])for(let y=.73;y<6.15;y+=.34)box(house,(Math.round(y*100)%2===0)?.4:.49,.255,.12,f.x+side*(f.w/2-.21),y,f.z+.015,trim);
+  const el=canvas.current;if(!el)return;let renderer:THREE.WebGLRenderer;
+  try{renderer=new THREE.WebGLRenderer({canvas:el,antialias:true,alpha:false,powerPreference:'low-power'})}catch{cb.current.onUnavailable();return}
+  gsap.registerPlugin(ScrollTrigger);const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.toneMapping=THREE.NoToneMapping;renderer.outputColorSpace=THREE.SRGBColorSpace;
+  const scene=new THREE.Scene();scene.background=new THREE.Color('#dedcc8');
+  const camera=new THREE.OrthographicCamera(-12,12,10,-10,.1,180);camera.position.set(17,13,22);camera.lookAt(0,3,0);
+  scene.add(new THREE.AmbientLight(0xffffff,.24));const sun=new THREE.DirectionalLight(0xffffff,3.5);sun.position.set(-13,22,13);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-23,right:23,top:23,bottom:-23,near:.5,far:85});sun.shadow.bias=-.0003;sun.shadow.normalBias=.025;scene.add(sun);
+  const materials:THREE.Material[]=[],geos:THREE.BufferGeometry[]=[],cache=new Map<string,THREE.BufferGeometry>();
+  function inkMaterial(paper:string,shadow:string,grain=.065){
+   const mat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:1,metalness:0});const light=new THREE.Color(paper),shade=new THREE.Color(shadow);
+   mat.onBeforeCompile=shader=>{shader.uniforms.inkLight={value:light};shader.uniforms.inkShadow={value:shade};shader.uniforms.grainStrength={value:grain};shader.fragmentShader='uniform vec3 inkLight;\nuniform vec3 inkShadow;\nuniform float grainStrength;\n'+shader.fragmentShader;
+    shader.fragmentShader=shader.fragmentShader.replace('#include <opaque_fragment>',`float illumination = dot(reflectedLight.directDiffuse, vec3(0.2126,0.7152,0.0722));
+     float lightMask=smoothstep(0.035,0.13,illumination);
+     vec3 midtone=mix(inkShadow,inkLight,0.64);
+     outgoingLight=mix(inkShadow,mix(midtone,inkLight,smoothstep(0.15,0.75,illumination)),lightMask);
+     #include <opaque_fragment>`).replace('#include <dithering_fragment>',`#include <dithering_fragment>
+     float grain=fract(sin(dot(floor(gl_FragCoord.xy),vec2(12.9898,78.233)))*43758.5453)-0.5;
+     gl_FragColor.rgb += grain*grainStrength;`)};
+   mat.customProgramCacheKey=()=>paper+shadow;materials.push(mat);return mat;
   }
-  // Side and rear cornices continue around the building; geometry works from every angle.
-  for(const x of [-9.22,9.22])for(const[y,h,w]of [[.58,.12,.22],[3.11,.14,.18],[3.28,.09,.24],[6.28,.15,.26],[6.43,.11,.36]])box(house,w,h,6.9,x,y,.05,trim);
-  for(const[y,h,d]of [[.57,.13,.15],[3.1,.14,.18],[3.27,.09,.25],[6.28,.15,.26],[6.43,.11,.38]])box(house,18.7,h,d,0,y,-3.14,trim);
-  // Mansard roofs: four sloping metal faces with individual standing seams.
-  function mansard(x:number,z:number,w:number,d:number,bottom:number,height:number){
-   const tw=w*.61,td=d*.68;const vs=[[-w/2,0,-d/2],[w/2,0,-d/2],[w/2,0,d/2],[-w/2,0,d/2],[-tw/2,height,-td/2],[tw/2,height,-td/2],[tw/2,height,td/2],[-tw/2,height,td/2]];
-   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vs.flat(),3));g.setIndex([0,4,5,0,5,1,1,5,6,1,6,2,2,6,7,2,7,3,3,7,4,3,4,0,4,7,6,4,6,5]);g.computeVertexNormals();geometries.push(g);const mesh=new THREE.Mesh(g,roofMat);mesh.position.set(x,bottom,z);mesh.castShadow=true;mesh.receiveShadow=true;house.add(mesh);
-   const points:number[]=[];for(let k=1;k<18;k++){const t=k/18;for(const side of[-1,1]){points.push(x-w/2+w*t,bottom+.01,z+side*d/2,x-tw/2+tw*t,bottom+height+.01,z+side*td/2);points.push(x+side*w/2,bottom+.01,z-d/2+d*t,x+side*tw/2,bottom+height+.01,z-td/2+td*t)}}
-   const lineGeo=new THREE.BufferGeometry();lineGeo.setAttribute('position',new THREE.Float32BufferAttribute(points,3));geometries.push(lineGeo);house.add(new THREE.LineSegments(lineGeo,seamMat));
-   box(house,tw+.06,.12,td+.06,x,bottom+height,z,roofMat);
-   for(const sx of[-1,1])for(const sz of[-1,1])cylinder(house,.025,.04,.38,x+sx*(tw/2-.05),bottom+height+.21,z+sz*(td/2-.05),iron,8);
+  const concrete=inkMaterial('#e9e5d2','#285741'),stone=inkMaterial('#d7d3bd','#376149'),metal=inkMaterial('#e6e6d4','#183f2d'),dark=inkMaterial('#769477','#16432f'),glass=inkMaterial('#b4c5aa','#204b37',.045),wood=inkMaterial('#ccc6a4','#45654b'),foliage=inkMaterial('#9bae88','#245039');
+  const outline=new THREE.LineBasicMaterial({color:0x274431,transparent:true,opacity:.55});materials.push(outline);
+  const world=new THREE.Group();scene.add(world);const layers=Array.from({length:4},()=>{const g=new THREE.Group();world.add(g);return g});
+  const geo=(key:string,fn:()=>THREE.BufferGeometry)=>{let g=cache.get(key);if(!g){g=fn();cache.set(key,g);geos.push(g)}return g};
+  function mesh(parent:THREE.Object3D,g:THREE.BufferGeometry,mat:THREE.Material,x:number,y:number,z:number,lined=false){const m=new THREE.Mesh(g,mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);if(lined){const e=geo('edge'+g.uuid,()=>new THREE.EdgesGeometry(g,28));m.add(new THREE.LineSegments(e,outline))}return m}
+  const box=(p:THREE.Object3D,w:number,h:number,d:number,x:number,y:number,z:number,mat:THREE.Material=concrete,lined=false)=>mesh(p,geo(`b${w},${h},${d}`,()=>new THREE.BoxGeometry(w,h,d)),mat,x,y,z,lined);
+  const cyl=(p:THREE.Object3D,r:number,h:number,x:number,y:number,z:number,mat:THREE.Material=metal)=>mesh(p,geo(`c${r},${h}`,()=>new THREE.CylinderGeometry(r,r,h,12)),mat,x,y,z);
+  function beam(p:THREE.Object3D,a:number[],b:number[],width=.08,mat:THREE.Material=metal){const from=new THREE.Vector3(...a),to=new THREE.Vector3(...b),delta=to.clone().sub(from);const m=box(p,width,delta.length(),width,...from.clone().add(to).multiplyScalar(.5).toArray() as [number,number,number],mat);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());return m}
+  // Excavated site with retaining walls and layered ground, not a floating display plinth.
+  box(layers[0],19,.75,15.5,.2,-.65,.3,stone,true);box(layers[0],18.6,.15,15.2,.2,-.19,.3,stone);
+  box(layers[0],12,.9,9.8,0,-.28,0,concrete,true);box(layers[0],11.5,.15,9.3,0,.21,0,stone,true);
+  for(const x of[-5.9,5.9])for(let z=-4.5;z<4.8;z+=.75)box(layers[0],.10,.65,.045,x,-.16,z,metal);
+  const xs=[-4.9,-2.45,0,2.45,4.9],zs=[-3.8,0,3.8];
+  for(const x of xs)for(const z of zs){box(layers[0],.72,.4,.72,x,.38,z,concrete,true);for(const dx of[-.15,.15])for(const dz of[-.15,.15])cyl(layers[0],.016,.55,x+dx,.55,z+dz,metal)}
+  // Three occupied structural floors. The right bays remain exposed during construction.
+  for(let f=0;f<3;f++){
+   const parent=layers[f+1],y=.52+f*2.64;
+   box(parent,10.8,.24,8.4,0,y,0,concrete,true);
+   for(const x of xs)for(const z of zs){box(parent,.28,2.40,.32,x,y+1.32,z,concrete,true);box(parent,.41,.12,.45,x,y+2.46,z,stone)}
+   for(const z of zs)box(parent,10.3,.28,.3,0,y+2.41,z,concrete,true);
+   for(const x of xs)box(parent,.28,.3,8.0,x,y+2.42,0,concrete);
+   // Dark inset glazing, slim mullions, concrete reveals and sills.
+   if(f<2)for(const x of[-3.67,-1.22,1.22]){
+    box(parent,2.13,1.93,.065,x,y+1.29,3.82,glass);
+    for(const dx of[-1.09,0,1.09])box(parent,.038,2.15,.10,x+dx,y+1.32,3.89,metal);
+    for(const dy of[.25,1.45,2.37])box(parent,2.2,.035,.11,x,y+dy,3.88,metal);
+    box(parent,2.23,.095,.2,x,y+.24,3.88,stone,true);
+   }
+   // Ribbed industrial wall on the left and back, each panel has depth.
+   box(parent,.13,2.20,7.7,-5.08,y+1.32,0,stone);
+   for(let z=-3.72;z<=3.8;z+=.2)box(parent,.075,2.2,.035,-5.17,y+1.32,z,metal);
+   box(parent,7.30,2.2,.12,-1.25,y+1.32,-3.98,stone);
+   for(let x=-4.9;x<2.4;x+=.22)box(parent,.038,2.2,.07,x,y+1.32,-4.08,metal);
+   // Visible workspace furnishings make the building legible at human scale.
+   for(const x of[-3.2,.4])for(const z of[-1.8,1.5]){
+    box(parent,1.5,.085,.66,x,y+.83,z,wood,true);for(const dx of[-.62,.62])for(const dz of[-.23,.23])box(parent,.04,.67,.04,x+dx,y+.46,z+dz,metal);
+    box(parent,.40,.045,.4,x,y+.50,z-.6,metal);box(parent,.40,.48,.045,x,y+.72,z-.77,metal);
+    for(const dx of[-.14,.14])box(parent,.025,.44,.025,x+dx,y+.26,z-.6,metal);
+    if(f===0)box(parent,.36,.26,.035,x,y+.99,z,glass,true);
+   }
+   // Floor-to-floor stair and landing in the open right-hand bay.
+   for(let i=0;i<14;i++)box(parent,1.12,.095,.21,3.55,y+.13+i*.177,-2.9+i*.215,concrete,true);
+   for(const x of[2.95,4.15]){beam(parent,[x,y+.75,-2.9],[x,y+3.04,-.05],.038);for(let i=0;i<7;i++)beam(parent,[x,y+.25+i*.354,-2.8+i*.43],[x,y+.95+i*.354,-2.8+i*.43],.025)}
+   // Balustrade across the open terrace bay.
+   for(let x=2.5;x<5;x+=.31)box(parent,.025,.88,.025,x,y+.68,3.93,metal);
+   box(parent,2.55,.04,.055,3.75,y+1.14,3.93,metal);
   }
-  mansard(-6.75,.13,5.05,7.08,6.55,1.98);mansard(6.75,.13,5.05,7.08,6.55,1.98);mansard(0,.15,5.05,7.24,6.55,1.76);
-  for(const x of[-3.48,3.48])mansard(x,-.03,2.08,6.38,6.43,1.01);
-  // Glazing set behind thick sculpted surrounds, with muntins and projecting sills.
-  function windowShape(w:number,h:number,arched:boolean){const s=new THREE.Shape();s.moveTo(-w/2,0);s.lineTo(w/2,0);if(arched){s.lineTo(w/2,h-w/2);s.absarc(0,h-w/2,w/2,0,Math.PI,false)}else{s.lineTo(w/2,h);s.lineTo(-w/2,h)}s.lineTo(-w/2,0);return s}
-  function windowAt(x:number,y:number,z:number,w=.70,h=1.58,arch=false,rotation=0){const group=new THREE.Group();group.position.set(x,y,z);group.rotation.y=rotation;house.add(group);
-   const key=`window${w},${h},${arch}`;const paneG=geom(key,()=>new THREE.ShapeGeometry(windowShape(w,h,arch),20));const pane=new THREE.Mesh(paneG,glass);pane.position.z=.021;group.add(pane);
-   const frameG=geom('frame'+key,()=>{const s=windowShape(w+.20,h+.16,arch);const hole=windowShape(w,h-.015,arch);s.holes.push(new THREE.Path(hole.getPoints(24)));return new THREE.ExtrudeGeometry(s,{depth:.095,bevelEnabled:false,curveSegments:20})});const frame=new THREE.Mesh(frameG,trim);frame.position.set(0,-.055,.015);frame.castShadow=true;group.add(frame);
-   box(group,.039,h-.03,.06,0,h/2,.087,trim);box(group,w,.04,.06,0,h*.47,.087,trim);if(arch)box(group,w,.04,.06,0,h-w/2,.087,trim);
-   box(group,w+.29,.095,.27,0,-.07,.10,trim);box(group,w+.27,.075,.18,0,h+.11,.06,trim);
+  // Roof trusses, diagonal bracing, purlins, partially installed standing-seam covering.
+  const roof=layers[3],roofY=8.68;
+  for(const z of[-3.8,-1.9,0,1.9,3.8]){
+   beam(roof,[-5.05,roofY,z],[0,roofY+1.83,z],.13);beam(roof,[0,roofY+1.83,z],[5.05,roofY,z],.13);beam(roof,[-5.05,roofY,z],[5.05,roofY,z],.10);
+   for(let x=-4;x<=4;x+=1.0){const height=1.83*(1-Math.abs(x)/5.05);beam(roof,[x,roofY,z],[x,roofY+height,z],.055);beam(roof,[x,roofY,z],[Math.min(x+1,5),roofY+1.83*(1-Math.abs(Math.min(x+1,5))/5.05),z],.055)}
   }
-  for(const cx of[-6.75,6.75])for(const dx of[-1.23,0,1.23]){windowAt(cx+dx,.99,3.56,.70,1.64);windowAt(cx+dx,3.83,3.56,.70,1.75)}
-  for(const x of[-3.47,3.47]){windowAt(x,1.00,3.12,.70,1.6);windowAt(x,3.83,3.12,.70,1.73)}
-  for(const x of[-1.35,0,1.35]){windowAt(x,3.72,3.84,.83,2.05,true);windowAt(x,.73,3.84,.86,2.00,x===0)}
-  for(const side of[-1,1])for(const z of[-2.0,-.2,1.6]){windowAt(side*9.155,1.0,z,.70,1.62,false,side*Math.PI/2);windowAt(side*9.155,3.84,z,.70,1.74,false,side*Math.PI/2)}
-  for(let x=-8.1;x<8.5;x+=1.35){windowAt(x,.99,-3.112,.70,1.62,false,Math.PI);windowAt(x,3.83,-3.112,.70,1.72,false,Math.PI)}
-  // The central pediment is a solid triangular extrusion, with a recessed tympanum.
-  function pediment(w:number,h:number,y:number,z:number,mat:THREE.Material){const s=new THREE.Shape();s.moveTo(-w/2,0);s.lineTo(w/2,0);s.lineTo(0,h);s.closePath();const g=new THREE.ExtrudeGeometry(s,{depth:.15,bevelEnabled:false});geometries.push(g);const m=new THREE.Mesh(g,mat);m.position.set(0,y,z);m.castShadow=true;house.add(m)}
-  pediment(5.32,1.34,6.37,3.90,trim);pediment(4.66,1.06,6.50,4.065,shadowStone);pediment(4.23,.86,6.56,4.22,stone);
-  box(house,5.50,.12,.52,0,6.40,4.00,trim);box(house,5.34,.09,.45,0,6.54,4.01,trim);
-  // Four entrance columns, entablature and stone balcony balustrades.
-  for(const x of[-1.98,-.71,.71,1.98]){box(house,.43,.15,.43,x,.68,4.79,trim);cylinder(house,.22,.23,.12,x,.81,4.79);cylinder(house,.145,.178,2.25,x,1.99,4.79);cylinder(house,.21,.16,.14,x,3.16,4.79);box(house,.47,.15,.46,x,3.28,4.79,trim)}
-  box(house,5.47,.19,1.57,0,3.45,4.44,trim);box(house,5.62,.095,1.69,0,3.59,4.44,trim);
-  for(let i=0;i<17;i++){const x=-2.48+i*.31;cylinder(house,.041,.055,.52,x,3.98,5.19,trim,8);cylinder(house,.073,.061,.18,x,3.98,5.19,trim,8)}
-  box(house,5.31,.10,.16,0,4.29,5.19,trim);for(const x of[-2.58,2.58]){box(house,.18,.67,.18,x,3.98,5.17,trim);box(house,.23,.10,.23,x,4.33,5.17,trim);box(house,.10,.10,1.38,x,4.28,4.48,trim)}
-  for(let i=0;i<5;i++)box(model,5.7+i*.22,.11*(5-i),.37,0,.055*(5-i),5.02+i*.35,trim);
-  // Downpipes, rooftop chimneys and ridge details complete the silhouette.
-  for(const x of[-8.98,8.98,-2.4,2.4])cylinder(house,.036,.036,5.88,x,3.43,x===-2.4||x===2.4?3.96:3.70,roofMat,8);
-  for(const x of[-4.8,4.8]){box(house,.49,1.05,.52,x,7.23,-1.7,stone);box(house,.61,.13,.64,x,7.80,-1.7,trim)}
-  const groundG=new THREE.PlaneGeometry(160,160);geometries.push(groundG);const groundM=new THREE.ShadowMaterial({color:0x555345,opacity:.17});const ground=new THREE.Mesh(groundG,groundM);ground.rotation.x=-Math.PI/2;ground.position.y=-.415;ground.receiveShadow=true;scene.add(ground);
-  let alive=true,visible=true,raf=0,drag=false,startX=0,startAngle=0;
+  for(let x=-4.8;x<5;x+=1.2)beam(roof,[x,roofY+1.83*(1-Math.abs(x)/5.05),-4.1],[x,roofY+1.83*(1-Math.abs(x)/5.05),4.1],.07);
+  const roofPanel=box(roof,5.36,.08,8.4,-2.52,roofY+.98,0,stone,true);roofPanel.rotation.z=Math.atan2(1.83,5.05);
+  for(let z=-4.1;z<4.2;z+=.20){const rib=box(roof,5.37,.035,.028,-2.52,roofY+1.04,z,metal);rib.rotation.z=Math.atan2(1.83,5.05)}
+  // External scaffolding, tied back to the slab edge with diagonal braces.
+  for(const z of[-3.7,-1.2,1.3,3.8])for(const x of[5.5,6.35])cyl(layers[0],.025,8.3,x,4.30,z,metal);
+  for(const y of[1.1,3.7,6.3,8.25]){for(const x of[5.5,6.35])beam(layers[0],[x,y,-3.8],[x,y,3.9],.03);for(const z of[-2.5,0,2.5])box(layers[0],.9,.07,2.4,5.92,y,z,wood);for(const z of[-3.7,-1.2,1.3])beam(layers[0],[6.35,y,z],[6.35,Math.min(y+2.6,8.7),z+2.5],.025)}
+  // Timber stacks, concrete pipes and stored blocks around the active site.
+  for(const [x,z]of[[-6.8,3.9],[6.7,5.5],[-3.0,5.8]]){
+   for(let l=0;l<5;l++)for(let k=0;k<4;k++)box(layers[0],1.5,.12,.16,x,.03+l*.13,z+k*.2,wood,l===4);
+   for(const dx of[-.6,.6])box(layers[0],.12,.1,.95,x+dx,-.03,z+.3,metal);
+  }
+  const pipeG=geo('pipe',()=>{const s=new THREE.Shape();s.absarc(0,0,.42,0,Math.PI*2,false);const hole=new THREE.Path();hole.absarc(0,0,.32,0,Math.PI*2,true);s.holes.push(hole);return new THREE.ExtrudeGeometry(s,{depth:2.45,bevelEnabled:false,curveSegments:24})});
+  for(const [x,y]of[[3.0,.32],[3.85,.32],[3.43,1.03]])mesh(layers[0],pipeG,concrete,x,y,5.0,true);
+  for(let k=0;k<12;k++)box(layers[0],.42,.24,.55,-6.9+(k%3)*.45,.06+Math.floor(k/6)*.26,-3.5+Math.floor((k%6)/3)*.6,stone,true);
+  // Sparse trees frame the architecture, with deterministic irregular crowns.
+  function tree(x:number,z:number,size:number){cyl(layers[0],.09,size*.72,x,size*.34,z,dark);for(let i=0;i<7;i++){const a=i*2.4,r=.55+(i%3)*.16;const m=mesh(layers[0],geo('leaf',()=>new THREE.IcosahedronGeometry(1,1)),foliage,x+Math.cos(a)*r,size*.7+(i%3)*.32,z+Math.sin(a)*r);m.scale.set(size*.35,size*.39,size*.33)}}
+  tree(-7.2,-5.1,3.6);tree(-8,0,2.5);tree(7.4,-5.3,3.3);tree(-5.3,6.4,1.6);
+  // Survey pegs, retaining-wall seams and scattered site aggregate.
+  for(const x of[-8.6,8.6])for(const z of[-6.6,6.8]){box(layers[0],.08,.6,.08,x,.19,z,dark);box(layers[0],.11,.07,.11,x,.52,z,concrete)}
+  let seed=731;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+  const rubbleG=geo('rubble',()=>new THREE.IcosahedronGeometry(.12,0));const rubble=new THREE.InstancedMesh(rubbleG,stone,170),matrix=new THREE.Matrix4();for(let i=0;i<170;i++){let x=(rand()-.5)*18,z=(rand()-.5)*14;if(Math.abs(x)<6&&Math.abs(z)<4.8)x=6.5+rand()*2;matrix.compose(new THREE.Vector3(x,-.025,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(rand(),rand(),rand())),new THREE.Vector3(1+rand(),.5+rand(),1+rand()));rubble.setMatrixAt(i,matrix)}rubble.castShadow=true;rubble.receiveShadow=true;layers[0].add(rubble);
+  // The background also receives the same green shadows and printed grain.
+  const ground=mesh(scene,geo('ground',()=>new THREE.PlaneGeometry(150,150)),concrete,0,-1.055,0);ground.rotation.x=-Math.PI/2;
+  const state={progress:1,orbit:0};let alive=true,visible=true,raf=0,lastPhase=-1;
   const render=()=>{if(!alive||raf||!visible||document.hidden)return;raf=requestAnimationFrame(()=>{raf=0;renderer.render(scene,camera)})};
-  const resize=()=>{const w=element.clientWidth,h=element.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);const aspect=w/h;const half=mobile.matches?13/aspect:6.4;camera.left=-half*aspect;camera.right=half*aspect;camera.top=half;camera.bottom=-half;camera.updateProjectionMatrix();render()};
-  const ro=new ResizeObserver(resize);ro.observe(element);resize();const io=new IntersectionObserver(e=>{visible=e[0].isIntersecting;if(visible)render()},{rootMargin:'100px'});io.observe(element);
-  const docVisibility=()=>{if(!document.hidden)render()};document.addEventListener('visibilitychange',docVisibility);
-  const animation=gsap.context(()=>{if(!reduced.matches){gsap.from(house.position,{y:-.35,duration:1.5,ease:'power3.out',onUpdate:render});gsap.from(model.rotation,{y:-.14,duration:2,ease:'power3.out',onUpdate:render})}});
-  change.current=()=>{gsap.to(model.rotation,{y:model.rotation.y+Math.PI/2,duration:reduced.matches?0:1.7,ease:'power3.inOut',overwrite:true,onUpdate:render})};
-  const down=(e:PointerEvent)=>{if(e.pointerType==='touch')return;drag=true;startX=e.clientX;startAngle=model.rotation.y;gsap.killTweensOf(model.rotation);element.setPointerCapture(e.pointerId)};
-  const move=(e:PointerEvent)=>{if(drag){model.rotation.y=startAngle+(e.clientX-startX)*.006;render()}};
-  const up=()=>{drag=false};const lost=(e:Event)=>{e.preventDefault();element.style.visibility='hidden';unavailable.current()};
-  element.addEventListener('pointerdown',down);element.addEventListener('pointermove',move);element.addEventListener('pointerup',up);element.addEventListener('pointercancel',up);element.addEventListener('webglcontextlost',lost);
-  renderer.render(scene,camera);ready.current();
-  return()=>{alive=false;change.current=null;animation.revert();gsap.killTweensOf(model.rotation);cancelAnimationFrame(raf);ro.disconnect();io.disconnect();document.removeEventListener('visibilitychange',docVisibility);element.removeEventListener('pointerdown',down);element.removeEventListener('pointermove',move);element.removeEventListener('pointerup',up);element.removeEventListener('pointercancel',up);element.removeEventListener('webglcontextlost',lost);geometries.forEach(g=>g.dispose());[stone,trim,shadowStone,roofMat,seamMat,glass,iron,baseMat,groundM].forEach(m=>m.dispose());env.dispose();renderer.dispose()};
+  const update=()=>{const p=state.progress;for(let i=1;i<4;i++){const value=THREE.MathUtils.smoothstep(p,(i-1)*.24,.4+(i-1)*.24);layers[i].position.y=(1-value)*i*1.8;layers[i].rotation.y=(1-value)*(i%2?-.045:.045)}world.rotation.y=-.08+state.orbit+(1-p)*.10;camera.zoom=.87+p*.26;camera.lookAt(0,3.7+(1-p)*2.5,0);camera.updateProjectionMatrix();const phase=Math.min(3,Math.floor(p*3.99));if(lastPhase!==phase){lastPhase=phase;cb.current.onPhase(phase)}el.dataset.progress=p.toFixed(3);render()};
+  const resize=()=>{const w=el.clientWidth,h=el.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);const aspect=w/h,half=Math.max(8.9,10/aspect);camera.left=-half*aspect;camera.right=half*aspect;camera.top=half;camera.bottom=-half;camera.updateProjectionMatrix();update()};
+  const ro=new ResizeObserver(resize);ro.observe(el);const io=new IntersectionObserver(e=>{visible=e[0].isIntersecting;if(visible)render()});io.observe(el);const vis=()=>render();document.addEventListener('visibilitychange',vis);
+  const context=gsap.context(()=>{if(!reduced.matches&&matchMedia('(min-width:701px)').matches)ScrollTrigger.create({trigger:'.assembly-story',start:'top top',end:'bottom bottom',onUpdate:self=>gsap.to(state,{progress:1-self.progress*.96,duration:.5,overwrite:true,ease:'power2.out',onUpdate:update})})});
+  select.current=n=>{if(n===4){state.progress=0;update()}gsap.to(state,{progress:n===4?1:n/3,duration:reduced.matches?0:n===4?3.8:1.7,ease:n===4?'none':'power3.inOut',overwrite:true,onUpdate:update})};
+  let dragging=false,start=0,initial=0;const down=(e:PointerEvent)=>{if(e.pointerType==='touch')return;dragging=true;start=e.clientX;initial=state.orbit;el.setPointerCapture(e.pointerId)};const move=(e:PointerEvent)=>{if(dragging){state.orbit=initial+(e.clientX-start)*.004;update()}};const up=()=>{dragging=false};const lost=(e:Event)=>{e.preventDefault();cb.current.onUnavailable()};
+  el.addEventListener('pointerdown',down);el.addEventListener('pointermove',move);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);el.addEventListener('webglcontextlost',lost);resize();renderer.render(scene,camera);cb.current.onReady();
+  return()=>{alive=false;select.current=null;context.revert();gsap.killTweensOf(state);cancelAnimationFrame(raf);ro.disconnect();io.disconnect();document.removeEventListener('visibilitychange',vis);el.removeEventListener('pointerdown',down);el.removeEventListener('pointermove',move);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);el.removeEventListener('webglcontextlost',lost);geos.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());renderer.dispose()};
  },[]);
- return <canvas className="architecture-canvas" ref={canvas} aria-label="Model 3D al unei clădiri clasice cu mansardă, coloane și ferestre arcuite"/>;
+ return <canvas className="architecture-canvas" ref={canvas} aria-label="Șantier 3D detaliat: clădire industrială, structură, schele și materiale"/>;
 }
