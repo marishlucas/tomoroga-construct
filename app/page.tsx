@@ -1,8 +1,8 @@
 "use client";
 import {useEffect,useState} from 'react';
-import {ArrowUpRight,ArrowDown,Menu,X,Play,Phone,Mail,Warehouse,Route,Droplets} from 'lucide-react';
+import {ArrowUpRight,Menu,X,Play} from 'lucide-react';
 import ArchitectureScene from './scene';
-import {Hero34} from '@/components/hero34';
+import {Hero8} from '@/components/hero8';
 const phases=['Fundație','Structură','Arhitectură','Clădire'];
 export default function Home(){
  const[menu,setMenu]=useState(false),[phase,setPhase]=useState(0),[ready,setReady]=useState(false),[unavailable,setUnavailable]=useState(false),[command,setCommand]=useState({step:0,id:0});
@@ -13,20 +13,23 @@ export default function Home(){
   <main id="continut">
    <section className="assembly-story" aria-label="Din idee în construcție">
     <div className="assembly-sticky">
-     <div className="contact-strip"><div><a href="tel:+40740225554"><Phone size={13}/> 0740 225 554</a><a href="mailto:office@tomorogaconstruct.ro"><Mail size={14}/> office@tomorogaconstruct.ro</a></div><span>Idei. Teren. Realitate.</span></div>
      <header className="site-header">
       <a href="#" className="brand" aria-label="Tomoroga Construct — Antrepriză generală"><img src="/tomoroga-logo.png" alt="Tomoroga Construct — Antrepriză generală"/></a>
       <nav className={menu?'navigation is-open':'navigation'} aria-label="Navigare principală"><a href="#expertiza" onClick={()=>setMenu(false)}>Ce construim</a><a href="#compania" onClick={()=>setMenu(false)}>Despre noi</a><a href="#contact" onClick={()=>setMenu(false)}>Ai un proiect? <ArrowUpRight size={17}/></a></nav>
       <button className="menu-toggle" aria-label={menu?'Închide meniul':'Deschide meniul'} aria-expanded={menu} onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
      </header>
-     <Hero34 className="construction-hero" badge={undefined} heading={<>Construcții civile<br/>și industriale.</>} description="De la prima linie pe plan, la ultimul detaliu pus în operă. Construim cu grijă, din 2004." buttons={{primary:{text:'Discută un proiect',url:'#contact'},secondary:{text:'Descoperă serviciile',url:'#expertiza'}}} details={<div className="hero-services"><span><Warehouse/> Construcții<br/>industriale</span><span><Route/> Lucrări de<br/>infrastructură</span><span><Droplets/> Rețele de apă<br/>și canalizare</span></div>} media={
+     <Hero8 media={
       <div className="architecture-stage" data-ready={ready}>
        <ArchitectureScene command={command} onPhase={setPhase} onReady={()=>setReady(true)} onUnavailable={()=>{setUnavailable(true);setReady(false)}}/>
        {unavailable&&<p className="webgl-message">Explorarea 3D necesită un browser cu WebGL activ. Descoperă mai jos ce construim.</p>}
-       <div className="scene-caption"><span>O viziune. Fiecare detaliu.</span><span>Studiu 3D interactiv</span></div>
+      </div>
+     } controls={
+      <div className="hero8-controls">
+       <span className="model-label">O viziune. Fiecare detaliu.</span>
+       <div className="stage-controls" role="group" aria-label="Etapele construcției">{phases.map((label,i)=><button key={label} onClick={()=>choose(i)} disabled={!ready} aria-pressed={phase===i} className={phase===i?'is-active':''}>{label}</button>)}<button className="play-assembly" onClick={()=>choose(4)} disabled={!ready}><Play size={14}/> Vezi asamblarea</button></div>
+       <span className="model-hint">Studiu 3D interactiv</span>
       </div>
      }/>
-     <div className="construction-controls"><span><ArrowDown size={17}/> Derulează pentru a explora straturile</span><div className="stage-controls" role="group" aria-label="Etapele construcției">{phases.map((label,i)=><button key={label} onClick={()=>choose(i)} disabled={!ready} aria-pressed={phase===i} className={phase===i?'is-active':''}>{label}</button>)}<button className="play-assembly" onClick={()=>choose(4)} disabled={!ready}><Play size={14}/> Vezi asamblarea</button></div></div>
 
     </div>
    </section>
