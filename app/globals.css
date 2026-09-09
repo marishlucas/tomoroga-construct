@@ -67,3 +67,12 @@ main#continut{width:100%;max-width:1536px;margin-inline:auto}
 @media(prefers-reduced-motion:no-preference){
  .hero8-media:has(.architecture-stage[data-ready="false"][data-unavailable="false"]){clip-path:inset(0 100% 0 0)}
 }
+
+/* The boot script sets this before body paint; GSAP takes over before it is cleared. */
+@media(prefers-reduced-motion:no-preference){
+ html[data-hero-intro="pending"] .hero8 h1,
+ html[data-hero-intro="pending"] .hero8-copy p,
+ html[data-hero-intro="pending"] .hero8-actions a,
+ html[data-hero-intro="pending"] .hero8-controls .model-label,
+ html[data-hero-intro="pending"] .hero8-controls button{opacity:0}
+}

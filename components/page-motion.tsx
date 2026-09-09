@@ -16,7 +16,7 @@ export default function PageMotion({ sceneReady }: { sceneReady: boolean }) {
       const frame = document.querySelector('.hero8-media');
       if (frame) gsap.fromTo(frame,
         { clipPath: 'inset(0 100% 0 0)' },
-        { clipPath: 'inset(0 0% 0 0)', duration: .2, delay: .7, ease: 'power2.out', clearProps: 'clipPath' });
+        { clipPath: 'inset(0 0% 0 0)', duration: .2, delay: .45, ease: 'power2.out', clearProps: 'clipPath' });
     });
     return () => media.revert();
   }, [sceneReady]);
@@ -58,7 +58,7 @@ export default function PageMotion({ sceneReady }: { sceneReady: boolean }) {
               heroHeading.setAttribute('aria-label', accessibleTitle);
               const animation = gsap.fromTo(self.chars,
                 { yPercent: 28, opacity: 0 },
-                { yPercent: 0, opacity: 1, duration: .2, delay: .5, stagger: { amount: .1 }, ease: 'power2.out',
+                { yPercent: 0, opacity: 1, duration: .2, delay: .25, stagger: { amount: .1 }, ease: 'power2.out',
                   onComplete: () => self.revert() });
               animations.push(animation);
               return animation;
@@ -66,12 +66,15 @@ export default function PageMotion({ sceneReady }: { sceneReady: boolean }) {
           }));
           animations.push(gsap.fromTo(hero.querySelectorAll('p, .hero8-actions a'),
             { y: 8, opacity: 0 },
-            { y: 0, opacity: 1, duration: .2, delay: .6, stagger: .04, ease: 'power2.out', clearProps: 'transform,opacity' }));
+            { y: 0, opacity: 1, duration: .2, delay: .35, stagger: .04, ease: 'power2.out', clearProps: 'transform,opacity' }));
         }
 
         animations.push(gsap.fromTo(document.querySelectorAll('.hero8-controls .model-label, .hero8-controls .stage-controls button'),
           { y: 8, opacity: 0 },
-          { y: 0, opacity: 1, duration: .2, delay: .8, stagger: .035, ease: 'power2.out', clearProps: 'transform,opacity' }));
+          { y: 0, opacity: 1, duration: .2, delay: .55, stagger: .035, ease: 'power2.out', clearProps: 'transform,opacity' }));
+
+        // All hero targets now have their delayed initial GSAP state; reveal the parents.
+        delete document.documentElement.dataset.heroIntro;
 
         root.querySelectorAll<HTMLElement>(':scope > section h2').forEach(heading => {
           const accessibleTitle = heading.innerText.replace(/\s+/g, ' ').trim();
