@@ -33,6 +33,28 @@ export default function PageMotion() {
         };
         const focusCleanups: Array<() => void> = [];
 
+        // Hero copy plays immediately on load; its 3D canvas has its own motion.
+        const hero = document.querySelector('.hero8-copy');
+        const heroHeading = hero?.querySelector<HTMLElement>('h1');
+        if (hero && heroHeading) {
+          const accessibleTitle = heroHeading.innerText.replace(/\s+/g, ' ').trim();
+          splits.push(SplitText.create(heroHeading, {
+            type: 'words,chars', autoSplit: true, aria: 'auto',
+            onSplit: self => {
+              heroHeading.setAttribute('aria-label', accessibleTitle);
+              const animation = gsap.fromTo(self.chars,
+                { yPercent: 28, opacity: 0 },
+                { yPercent: 0, opacity: 1, duration: .2, stagger: { amount: .1 }, ease: 'power2.out',
+                  onComplete: () => self.revert() });
+              animations.push(animation);
+              return animation;
+            },
+          }));
+          animations.push(gsap.fromTo(hero.querySelectorAll('p, .hero8-actions a'),
+            { y: 8, opacity: 0 },
+            { y: 0, opacity: 1, duration: .2, stagger: .04, ease: 'power2.out', clearProps: 'transform,opacity' }));
+        }
+
         root.querySelectorAll<HTMLElement>(':scope > section h2').forEach(heading => {
           const accessibleTitle = heading.innerText.replace(/\s+/g, ' ').trim();
           const split = SplitText.create(heading, { type: 'words,chars', autoSplit: true, aria: 'auto',
