@@ -104,12 +104,23 @@ export default function ArchitectureScene({command,onPhase,onReady,onUnavailable
   const rubbleG=geo('rubble',()=>new THREE.IcosahedronGeometry(.12,0));const rubble=new THREE.InstancedMesh(rubbleG,stone,170),matrix=new THREE.Matrix4();for(let i=0;i<170;i++){let x=(rand()-.5)*18,z=(rand()-.5)*14;if(Math.abs(x)<6&&Math.abs(z)<4.8)x=6.5+rand()*2;matrix.compose(new THREE.Vector3(x,-.025,z),new THREE.Quaternion().setFromEuler(new THREE.Euler(rand(),rand(),rand())),new THREE.Vector3(1+rand(),.5+rand(),1+rand()));rubble.setMatrixAt(i,matrix)}rubble.castShadow=true;rubble.receiveShadow=true;layers[0].add(rubble);
   // The background also receives the same green shadows and printed grain.
   const ground=mesh(scene,geo('ground',()=>new THREE.PlaneGeometry(150,150)),concrete,0,-1.055,0);ground.rotation.x=-Math.PI/2;
-  const state={progress:1,orbit:0};let alive=true,visible=true,raf=0,lastPhase=-1;
+  const state={progress:0,orbit:0};let alive=true,visible=true,raf=0,lastPhase=-1;
   const render=()=>{if(!alive||raf||!visible||document.hidden)return;raf=requestAnimationFrame(()=>{raf=0;renderer.render(scene,camera)})};
   const update=()=>{const p=state.progress;for(let i=1;i<4;i++){const value=THREE.MathUtils.smoothstep(p,(i-1)*.24,.4+(i-1)*.24);layers[i].position.y=(1-value)*i*1.8;layers[i].rotation.y=(1-value)*(i%2?-.045:.045)}world.rotation.y=-.08+state.orbit+(1-p)*.10;camera.zoom=.87+p*.26;camera.lookAt(0,3.7+(1-p)*2.5,0);camera.updateProjectionMatrix();const phase=Math.min(3,Math.floor(p*3.99));if(lastPhase!==phase){lastPhase=phase;cb.current.onPhase(phase)}el.dataset.progress=p.toFixed(3);render()};
   const resize=()=>{const w=el.clientWidth,h=el.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);const aspect=w/h,half=Math.max(8.9,10/aspect);camera.left=-half*aspect;camera.right=half*aspect;camera.top=half;camera.bottom=-half;camera.updateProjectionMatrix();update()};
   const ro=new ResizeObserver(resize);ro.observe(el);const io=new IntersectionObserver(e=>{visible=e[0].isIntersecting;if(visible)render()});io.observe(el);const vis=()=>render();document.addEventListener('visibilitychange',vis);
-  const context=gsap.context(()=>{if(!reduced.matches&&matchMedia('(min-width:701px)').matches)ScrollTrigger.create({trigger:'.assembly-story',start:'top top',end:'bottom bottom',onUpdate:self=>gsap.to(state,{progress:1-self.progress*.96,duration:.5,overwrite:true,ease:'power2.out',onUpdate:update})})});
+  const context=gsap.matchMedia();
+  context.add({desktop:'(min-width:701px)',mobile:'(max-width:700px)',reducedMotion:'(prefers-reduced-motion:reduce)'},media=>{
+   if(media.conditions?.reducedMotion)return;
+   const story=el.closest('.assembly-story') as HTMLElement;
+   ScrollTrigger.create({
+    trigger:story,start:'top top',
+    // Mobile has no pinned section: complete while the model is still on screen.
+    end:media.conditions?.desktop?'bottom bottom':()=>`+=${Math.max(el.clientHeight,el.getBoundingClientRect().top-story.getBoundingClientRect().top)}`,
+    onUpdate:self=>gsap.to(state,{progress:self.progress,duration:.5,overwrite:true,ease:'power2.out',onUpdate:update}),
+   });
+   return()=>{gsap.killTweensOf(state)};
+  });
   select.current=n=>{if(n===4){state.progress=0;update()}gsap.to(state,{progress:n===4?1:n/3,duration:reduced.matches?0:n===4?3.8:1.7,ease:n===4?'none':'power3.inOut',overwrite:true,onUpdate:update})};
   let dragging=false,start=0,initial=0;const down=(e:PointerEvent)=>{if(e.pointerType==='touch')return;dragging=true;start=e.clientX;initial=state.orbit;el.setPointerCapture(e.pointerId)};const move=(e:PointerEvent)=>{if(dragging){state.orbit=initial+(e.clientX-start)*.004;update()}};const up=()=>{dragging=false};const lost=(e:Event)=>{e.preventDefault();cb.current.onUnavailable()};
   el.addEventListener('pointerdown',down);el.addEventListener('pointermove',move);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);el.addEventListener('webglcontextlost',lost);resize();renderer.render(scene,camera);cb.current.onReady();

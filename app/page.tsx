@@ -1,8 +1,10 @@
 "use client";
 import {useEffect,useState} from 'react';
-import {ArrowUpRight,Menu,X,Play} from 'lucide-react';
+import {ArrowUpRight,Menu,X} from 'lucide-react';
 import ArchitectureScene from './scene';
 import {Hero8} from '@/components/hero8';
+import HomeSections from '@/components/home-sections';
+import PageMotion from '@/components/page-motion';
 const phases=['Fundație','Structură','Arhitectură','Clădire'];
 export default function Home(){
  const[menu,setMenu]=useState(false),[phase,setPhase]=useState(0),[ready,setReady]=useState(false),[unavailable,setUnavailable]=useState(false),[command,setCommand]=useState({step:0,id:0});
@@ -26,16 +28,14 @@ export default function Home(){
      } controls={
       <div className="hero8-controls">
        <span className="model-label">O viziune. Fiecare detaliu.</span>
-       <div className="stage-controls" role="group" aria-label="Etapele construcției">{phases.map((label,i)=><button key={label} onClick={()=>choose(i)} disabled={!ready} aria-pressed={phase===i} className={phase===i?'is-active':''}>{label}</button>)}<button className="play-assembly" onClick={()=>choose(4)} disabled={!ready}><Play size={14}/> Vezi asamblarea</button></div>
-       <span className="model-hint">Studiu 3D interactiv</span>
+       <div className="stage-controls" role="group" aria-label="Etapele construcției">{phases.map((label,i)=><button key={label} onClick={()=>choose(i)} disabled={!ready} aria-pressed={phase===i} className={phase===i?'is-active':''}>{label}</button>)}</div>
       </div>
      }/>
 
     </div>
    </section>
-   <section className="expertise content-wrap" id="expertiza"><div className="section-intro"><h2>Solid, în esență.<br/><span>Atent, în fiecare detaliu.</span></h2><p>Suntem Tomoroga Construct.<br/>Antrepriză generală din 2004.</p></div><div className="services"><a href="https://www.tomorogaconstruct.ro/constructii-civile/" target="_blank" rel="noreferrer"><h3>Construcții civile</h3><span>Locuri pentru oameni.</span><ArrowUpRight/></a><a href="https://www.tomorogaconstruct.ro/constructii-industriale/" target="_blank" rel="noreferrer"><h3>Construcții industriale</h3><span>Spații pentru ceea ce urmează.</span><ArrowUpRight/></a><a href="https://www.tomorogaconstruct.ro/" target="_blank" rel="noreferrer"><h3>Reabilitare</h3><span>Un nou capitol pentru clădiri existente.</span><ArrowUpRight/></a><a href="https://www.tomorogaconstruct.ro/lucrari-de-infrastructura/" target="_blank" rel="noreferrer"><h3>Infrastructură</h3><span>Legăturile care fac totul posibil.</span><ArrowUpRight/></a></div></section>
-   <section className="company" id="compania"><div className="content-wrap"><p>De la prima linie pe plan<br/>până la ultimul detaliu<br/><span>pus în operă.</span></p><div className="company-bottom"><span>Tomoroga Construct</span><div>Construcții civile și industriale, reabilitări și infrastructură. Experiență construită din 2004.<a href="https://www.facebook.com/tomorogaconstruct2004/" target="_blank" rel="noreferrer">Urmărește activitatea noastră <ArrowUpRight size={17}/></a></div></div></div></section>
-   <footer className="contact content-wrap" id="contact"><h2>Ce construim<br/><a href="mailto:office@tomorogaconstruct.ro">împreună? <ArrowUpRight/></a></h2><div className="contact-details"><a href="mailto:office@tomorogaconstruct.ro">office@tomorogaconstruct.ro</a><a href="tel:+40740225554">0740 225 554</a><span>Luni – Vineri, 9:00 – 17:00</span></div><div className="footer-bottom"><span>© {new Date().getFullYear()} Tomoroga Construct</span><span>Prototip de prezentare</span><a href="#">Înapoi sus ↑</a></div></footer>
+   <HomeSections />
+   <PageMotion />
   </main>
  </>;
 }
