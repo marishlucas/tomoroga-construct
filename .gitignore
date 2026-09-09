@@ -40,3 +40,7 @@ next-env.d.ts
 # local build and visual review output
 *.tsbuildinfo
 /.impeccable/review/
+
+# Nitro intermediate build output
+/.nitro/
+/.output/
