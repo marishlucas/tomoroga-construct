@@ -24,7 +24,8 @@ A Romanian company presentation website whose primary goal is to get prospective
 - Generated imagery is authorized for this preview and must be identified as illustrative; do not present it as photographs of Tomoroga's actual employees or completed projects.
 - User requested GSAP motion: a continuous draggable gallery, a process marker that continues from its current position, and stable detail panels. Keep the process photograph stationary. Preserve touch, keyboard, and reduced-motion support.
 - Keep the complete page centered within a 1536px maximum width.
-- Heading entrances use 200ms character animations with 100ms total stagger; section fades take 200ms and play once.
+- Apply new entrances only to the gallery, process, and detail sections. Exclude the hero and the entire enquiry/footer; preserve the hero’s existing 3D assembly animation.
+- Scroll entrances wait until each target crosses 75% of the viewport. Headings use 200ms character animations with 100ms total stagger; images wipe across their stationary frames, button groups rise with a tight stagger, and rules draw from their starting edge. Entrances play once and honor reduced motion.
 
 ## Brand Commitments
 
