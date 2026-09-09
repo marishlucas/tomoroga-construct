@@ -35,7 +35,7 @@ export default function Home(){
     </div>
    </section>
    <HomeSections />
-   <PageMotion />
+   <PageMotion sceneReady={ready} />
   </main>
  </>;
 }

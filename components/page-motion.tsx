@@ -1,12 +1,26 @@
 'use client';
 
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 
 /** Entrances wait until their own element crosses three quarters of the viewport. */
-export default function PageMotion() {
+export default function PageMotion({ sceneReady }: { sceneReady: boolean }) {
+  const sceneRevealed = useRef(false);
+  useLayoutEffect(() => {
+    if (!sceneReady || sceneRevealed.current) return;
+    sceneRevealed.current = true;
+    const media = gsap.matchMedia();
+    media.add('(prefers-reduced-motion: no-preference)', () => {
+      const frame = document.querySelector('.hero8-media');
+      if (frame) gsap.fromTo(frame,
+        { clipPath: 'inset(0 100% 0 0)' },
+        { clipPath: 'inset(0 0% 0 0)', duration: .2, delay: .7, ease: 'power2.out', clearProps: 'clipPath' });
+    });
+    return () => media.revert();
+  }, [sceneReady]);
+
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger, SplitText);
     const media = gsap.matchMedia();
@@ -33,7 +47,7 @@ export default function PageMotion() {
         };
         const focusCleanups: Array<() => void> = [];
 
-        // Hero copy plays immediately on load; its 3D canvas has its own motion.
+        // Hero copy enters after a short page-load pause; its 3D canvas has its own motion.
         const hero = document.querySelector('.hero8-copy');
         const heroHeading = hero?.querySelector<HTMLElement>('h1');
         if (hero && heroHeading) {
@@ -44,7 +58,7 @@ export default function PageMotion() {
               heroHeading.setAttribute('aria-label', accessibleTitle);
               const animation = gsap.fromTo(self.chars,
                 { yPercent: 28, opacity: 0 },
-                { yPercent: 0, opacity: 1, duration: .2, stagger: { amount: .1 }, ease: 'power2.out',
+                { yPercent: 0, opacity: 1, duration: .2, delay: .5, stagger: { amount: .1 }, ease: 'power2.out',
                   onComplete: () => self.revert() });
               animations.push(animation);
               return animation;
@@ -52,8 +66,12 @@ export default function PageMotion() {
           }));
           animations.push(gsap.fromTo(hero.querySelectorAll('p, .hero8-actions a'),
             { y: 8, opacity: 0 },
-            { y: 0, opacity: 1, duration: .2, stagger: .04, ease: 'power2.out', clearProps: 'transform,opacity' }));
+            { y: 0, opacity: 1, duration: .2, delay: .6, stagger: .04, ease: 'power2.out', clearProps: 'transform,opacity' }));
         }
+
+        animations.push(gsap.fromTo(document.querySelectorAll('.hero8-controls .model-label, .hero8-controls .stage-controls button'),
+          { y: 8, opacity: 0 },
+          { y: 0, opacity: 1, duration: .2, delay: .8, stagger: .035, ease: 'power2.out', clearProps: 'transform,opacity' }));
 
         root.querySelectorAll<HTMLElement>(':scope > section h2').forEach(heading => {
           const accessibleTitle = heading.innerText.replace(/\s+/g, ' ').trim();

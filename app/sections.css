@@ -161,7 +161,6 @@
  .enquiry-email{align-self:flex-start}
  .company-footnote{flex-direction:column;gap:14px;margin-top:24px;font-size:13px}
  .page-bottom{flex-wrap:wrap;gap:10px 20px;font-size:11px}
- .page-bottom>a:nth-child(2){order:3;width:100%}
 }
 @media(prefers-reduced-motion:reduce){.home-sections *, .home-sections *::before, .home-sections *::after{transition:none!important;scroll-behavior:auto!important}}
 

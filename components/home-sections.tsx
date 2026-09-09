@@ -272,7 +272,7 @@ function ProjectEnquiry() {
       <div><a href="tel:+40740225554">0740 225 554</a><span>Luni – Vineri, 9:00 – 17:00</span></div>
       <a href="https://www.facebook.com/tomorogaconstruct2004/" target="_blank" rel="noreferrer">Pe șantier, zi de zi <ArrowUpRight size={16} aria-hidden="true" /></a>
     </div>
-    <div className="section-shell page-bottom"><span>© {new Date().getFullYear()} Tomoroga Construct</span><a href="https://www.tomorogaconstruct.ro/lucrari-de-infrastructura/" target="_blank" rel="noreferrer">Lucrări de infrastructură <ArrowUpRight size={14} aria-hidden="true" /></a><a href="#continut">Înapoi sus ↑</a></div>
+    <div className="section-shell page-bottom"><span>© {new Date().getFullYear()} Tomoroga Construct</span><a href="#continut">Înapoi sus ↑</a></div>
   </footer>;
 }
 
