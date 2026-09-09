@@ -21,7 +21,7 @@ export default function Home(){
       <button className="menu-toggle" aria-label={menu?'Închide meniul':'Deschide meniul'} aria-expanded={menu} onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
      </header>
      <Hero8 media={
-      <div className="architecture-stage" data-ready={ready}>
+      <div className="architecture-stage" data-ready={ready} data-unavailable={unavailable}>
        <ArchitectureScene command={command} onPhase={setPhase} onReady={()=>setReady(true)} onUnavailable={()=>{setUnavailable(true);setReady(false)}}/>
        {unavailable&&<p className="webgl-message">Explorarea 3D necesită un browser cu WebGL activ. Descoperă mai jos ce construim.</p>}
       </div>

@@ -62,3 +62,8 @@
 
 /* Keep the complete page within Tailwind’s screen-2xl width. */
 main#continut{width:100%;max-width:1536px;margin-inline:auto}
+
+/* Conceal the first WebGL frame until the one-time load reveal owns it. */
+@media(prefers-reduced-motion:no-preference){
+ .hero8-media:has(.architecture-stage[data-ready="false"][data-unavailable="false"]){clip-path:inset(0 100% 0 0)}
+}
