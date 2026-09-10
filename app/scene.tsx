@@ -90,29 +90,20 @@ export default function ArchitectureScene({command,onPhase,onReady,onUnavailable
   const io=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)render()});io.observe(el);
   const onVisibility=()=>render();document.addEventListener('visibilitychange',onVisibility);
   const media=gsap.matchMedia();
-  media.add({motion:'(prefers-reduced-motion:no-preference)',reduced:'(prefers-reduced-motion:reduce)',phone:'(max-width:700px)'},context=>{
-   const reduced=Boolean(context.conditions?.reduced);
+  media.add({desktop:'(min-width:701px)',phone:'(max-width:700px)'},context=>{
    const phone=Boolean(context.conditions?.phone);
    const driver={p:0};
-   let shownPhase=-1;
-   const sync=()=>{
-    const progress=driver.p;
-    if(reduced){
-     // Keep the scroll journey accessible without continuous camera or assembly motion.
-     const bounds=[0,.12,.28,.43,.58,.73,.91];
-     const phase=bounds.reduce((value,at,index)=>progress>=at?index:value,0);
-     if(phase!==shownPhase){shownPhase=phase;timeline.progress(chapterStops[phase])}
-    }else timeline.progress(progress);
-    phaseAt(progress);
-   };
+   // The requested construction experience always interpolates the full 3D timeline.
+   // OS motion preferences still apply to decorative text entrances, not this scroll interaction.
+   const sync=()=>{timeline.progress(driver.p);phaseAt(driver.p)};
    const animation=gsap.to(driver,{p:1,duration:1,ease:'none',paused:true,onUpdate:sync});
    const trigger=ScrollTrigger.create({
     trigger:story,start:'top top',
     // The stable sticky height keeps Safari's collapsing toolbar out of the scroll range.
     end:()=>`+=${Math.max(1,story.offsetHeight-sticky.offsetHeight)}`,
-    animation,scrub:phone||reduced?true:.45,invalidateOnRefresh:true,
+    animation,scrub:phone?.2:.45,invalidateOnRefresh:true,
    });
-   select.current=n=>window.scrollTo({top:trigger.start+(trigger.end-trigger.start)*chapterStops[n],behavior:reduced?'instant':'smooth'});
+   select.current=n=>window.scrollTo({top:trigger.start+(trigger.end-trigger.start)*chapterStops[n],behavior:'smooth'});
    sync();
    return()=>{trigger.kill();animation.kill()};
   });
