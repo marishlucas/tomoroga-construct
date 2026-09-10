@@ -144,7 +144,7 @@ export default function ProjectEnquiry() {
       </p>
     ) : null;
   return (
-    <footer className="enquiry-section lead-section" id="contact">
+    <section className="enquiry-section lead-section" id="contact">
       <div className="section-shell lead-grid">
         <div className="lead-intro">
           <h2>
@@ -153,16 +153,10 @@ export default function ProjectEnquiry() {
             <span>împreună?</span>
           </h2>
           <p className="lead-introduction">
-            Spune-ne ce ai în plan. Câteva detalii sunt suficiente pentru a
-            începe discuția.
-          </p>
-          <p className="lead-reassurance">
-            Nu trebuie să ai toate răspunsurile.
-            <br />
-            Pornim de la etapa în care ești acum.
+            Trimite-ne detaliile proiectului pentru o ofertă.
           </p>
           <div className="lead-direct">
-            <p>Preferi să vorbim direct?</p>
+            <p>Sau sună-ne:</p>
             <a className="lead-phone" href="tel:+40740225554">
               <Phone size={20} aria-hidden="true" />
               0740 225 554
@@ -194,9 +188,8 @@ export default function ProjectEnquiry() {
               <Check size={36} aria-hidden="true" />
               <h3>Cererea ta a fost trimisă.</h3>
               <p>
-                Mulțumim, {data.name.trim().split(' ')[0]}. Avem detaliile
-                proiectului din {data.locality.trim()} și datele tale de
-                contact.
+                Mulțumim, {data.name.trim().split(' ')[0]}. Am primit cererea
+                ta.
               </p>
               <p className="lead-success-contact">
                 Contact preferat:{' '}
@@ -253,14 +246,12 @@ export default function ProjectEnquiry() {
               </ol>
               <div className="lead-form-heading">
                 <h3 ref={heading} tabIndex={-1}>
-                  {step === 1
-                    ? 'Să începem cu ideea ta.'
-                    : 'Cum te putem contacta?'}
+                  {step === 1 ? 'Despre proiect' : 'Date de contact'}
                 </h3>
                 <p>
                   {step === 1
                     ? 'Doar tipul proiectului și localitatea sunt obligatorii.'
-                    : 'Lasă-ne numele și o modalitate de contact.'}
+                    : 'Alege telefon sau email.'}
                 </p>
               </div>
               <div className="lead-honeypot" aria-hidden="true">
@@ -441,12 +432,9 @@ export default function ProjectEnquiry() {
                     </div>
                   </details>
                   <button type="submit" className="lead-primary">
-                    Continuă cu datele de contact
+                    Continuă
                     <ArrowRight size={18} aria-hidden="true" />
                   </button>
-                  <p className="lead-step-note">
-                    Următorul pas: numele tău și cum preferi să discutăm.
-                  </p>
                 </div>
               ) : (
                 <div className="lead-step" key="contact">
@@ -556,7 +544,7 @@ export default function ProjectEnquiry() {
                       </div>
                     )}
                     <p id="lead-contact-help" className="lead-contact-help">
-                      Este suficientă o singură modalitate de contact.
+                      Te contactăm prin metoda aleasă.
                     </p>
                   </fieldset>
                   {status === 'error' && (
@@ -585,8 +573,7 @@ export default function ProjectEnquiry() {
                     )}
                   </button>
                   <p className="lead-privacy">
-                    Datele trimise în acest formular sunt destinate discuției
-                    despre proiectul tău. Nu te înscrii la un newsletter.
+                    Folosim datele tale doar pentru această cerere.
                   </p>
                   <button
                     type="button"
@@ -602,24 +589,6 @@ export default function ProjectEnquiry() {
           )}
         </div>
       </div>
-      <div className="section-shell company-footnote" id="compania">
-        <p>
-          Tomoroga Construct · Antrepriză generală din 2004.
-          <br />
-          <span>Construcții civile, industriale și reabilitări.</span>
-        </p>
-        <a
-          href="https://www.facebook.com/tomorogaconstruct2004/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Pe șantier, zi de zi <ArrowUpRight size={16} />
-        </a>
-      </div>
-      <div className="section-shell page-bottom">
-        <span>© {new Date().getFullYear()} Tomoroga Construct</span>
-        <a href="#continut">Înapoi sus ↑</a>
-      </div>
-    </footer>
+    </section>
   );
 }

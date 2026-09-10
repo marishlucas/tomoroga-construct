@@ -1,17 +1,22 @@
 'use client';
-import {useEffect,useLayoutEffect,useRef,useState} from 'react';
-import {ArrowDown,ArrowUpRight,Menu,X} from 'lucide-react';
+import {useLayoutEffect,useRef,useState} from 'react';
+import {ArrowDown,ArrowUpRight} from 'lucide-react';
 import gsap from 'gsap';
-import Image from 'next/image';
 import {SplitText} from 'gsap/SplitText';
 import ArchitectureScene from '@/app/scene';
 import {storyChapters} from '@/lib/construction-story';
 
 export default function ConstructionStory(){
- const [menu,setMenu]=useState(false),[phase,setPhase]=useState(0),[ready,setReady]=useState(false),[unavailable,setUnavailable]=useState(false);
+ const [phase,setPhase]=useState(0),[ready,setReady]=useState(false),[unavailable,setUnavailable]=useState(false);
  const [command,setCommand]=useState({step:0,id:0});
  const root=useRef<HTMLElement>(null),copy=useRef<HTMLDivElement>(null),initial=useRef(true);
- useEffect(()=>{const escape=(e:KeyboardEvent)=>{if(e.key==='Escape')setMenu(false)};window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape)},[]);
+ useLayoutEffect(()=>{
+  if(!window.matchMedia('(prefers-reduced-motion:no-preference)').matches)return;
+  // Root bootstrap does not rerun when returning here through client-side navigation.
+  document.documentElement.dataset.heroIntro='pending';
+  const fallback=window.setTimeout(()=>{delete document.documentElement.dataset.heroIntro},5000);
+  return()=>{window.clearTimeout(fallback);delete document.documentElement.dataset.heroIntro};
+ },[]);
  useLayoutEffect(()=>{
   if(!ready && !unavailable)return;
   gsap.registerPlugin(SplitText);
@@ -44,16 +49,11 @@ export default function ConstructionStory(){
  return <section className="construction-story" ref={root} data-ready={ready} data-unavailable={unavailable} aria-label="Povestea unei construcții">
   <div className="story-sticky">
    <div className="story-scene"><ArchitectureScene command={command} onPhase={setPhase} onReady={()=>setReady(true)} onUnavailable={()=>setUnavailable(true)}/></div>
-   <header className="site-header story-header">
-    <a href="#continut" className="brand" aria-label="Tomoroga Construct — Antrepriză generală"><Image src="/tomoroga-logo.png" alt="Tomoroga Construct — Antrepriză generală" width={179} height={179} priority/></a>
-    <nav id="story-navigation" className={menu?'navigation is-open':'navigation'} aria-label="Navigare principală"><a href="#contact" onClick={()=>setMenu(false)}>Proiectul tău</a><a href="#compania" onClick={()=>setMenu(false)}>Despre noi</a><a href="#contact" onClick={()=>setMenu(false)}>Ai un proiect? <ArrowUpRight size={17}/></a></nav>
-    <button className="menu-toggle" aria-label={menu?'Închide meniul':'Deschide meniul'} aria-expanded={menu} aria-controls="story-navigation" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
-   </header>
    <div className="story-content">
     <div className="story-copy" key={phase} ref={copy}>
      {phase===0?<h1 className="story-title">{chapter.title}<br/><span>{chapter.accent}</span></h1>:<><h1 className="sr-only">Din idee, în realitate.</h1><h2 className="story-title">{chapter.title}<br/><span>{chapter.accent}</span></h2></>}
      <p className="story-description">{chapter.text}</p>
-     <a className="story-cta" href="#contact">Să discutăm proiectul tău <ArrowUpRight size={18}/></a>
+     {phase===0&&<a className="story-cta" href="#contact">Să discutăm proiectul tău <ArrowUpRight size={18}/></a>}
      {phase>0&&phase<6&&<p className="story-detail">{chapter.detail}</p>}
     </div>
    </div>

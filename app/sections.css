@@ -172,7 +172,7 @@
 /* The enquiry follows the story directly; optional detail never blocks first contact. */
 .lead-section{padding-top:clamp(48px,7vw,100px)}
 .lead-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(40px,6vw,92px);align-items:start}
-.lead-intro{position:sticky;top:44px;padding-bottom:20px}
+.lead-intro{position:sticky;top:120px;padding-bottom:20px}
 .lead-intro h2{font-size:clamp(46px,5.8vw,82px);max-width:10ch}
 .lead-intro h2 span{color:#28593d}
 .lead-introduction{font-size:18px;max-width:34ch;margin-top:26px;color:#3f5647}
