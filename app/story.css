@@ -1,8 +1,8 @@
 /* A full-bleed Three.js stage; editorial content keeps the 2xl measure. */
 main#continut{max-width:none}.home-sections{max-width:1536px;margin-inline:auto}
-.construction-story{height:740svh;position:relative;background:#f5f3ec;color:#243529;--story-progress:0}
-.story-sticky{height:100svh;min-height:600px;position:sticky;top:0;isolation:isolate;overflow:hidden}
-.story-scene{position:absolute;inset:0;z-index:-1;background:#f5f3ec}
+.construction-story{height:740vh;height:740svh;position:relative;background:#f5f3ec;color:#243529;--story-progress:0}
+.story-sticky{height:100vh;height:100svh;min-height:600px;position:sticky;top:0;isolation:isolate;overflow:clip}
+.story-scene{position:absolute;inset:0;z-index:-1;background:#f5f3ec;pointer-events:none}
 .story-scene .architecture-canvas{cursor:default}
 .story-header{width:calc(100% - var(--gutter)*2);max-width:1408px;margin-inline:auto;background:transparent;height:108px;min-height:108px}
 .story-content{position:absolute;inset:108px 0 100px;max-width:1536px;margin:auto;display:flex;align-items:center;padding-inline:var(--gutter);pointer-events:none}
@@ -32,21 +32,21 @@ main#continut{max-width:none}.home-sections{max-width:1536px;margin-inline:auto}
 @media(min-width:1600px){.story-copy{width:35%}.story-title{font-size:80px}}
 @media(max-width:1050px) and (min-width:701px){.story-title{font-size:52px}.story-copy{width:39%}.story-header{height:94px;min-height:94px}.story-description{font-size:14px}.story-chapters button{font-size:10px;padding:8px}.story-bottom{gap:8px}.story-scroll{font-size:10px}.story-content{inset:94px 0 100px}}
 @media(max-width:700px){
- .construction-story{height:620svh}.story-sticky{min-height:580px}
+ .construction-story{height:620vh;height:620svh;touch-action:pan-y pinch-zoom}.story-sticky{min-height:0}
  .story-header{height:84px;min-height:84px}.story-header .navigation.is-open{top:76px;background:#f5f3ec;box-shadow:0 14px 25px #203d2c18}
  .story-content{inset:104px 0 auto;display:block;padding-inline:24px}
  .story-copy{width:100%;max-width:390px;padding:0}.story-title{font-size:clamp(36px,9.6vw,48px);line-height:1.02;max-width:13ch}
  .story-description{font-size:13px;line-height:1.5;margin-top:15px;max-width:38ch}
  .story-cta{margin-top:18px;font-size:12px;min-height:44px;padding:11px 16px;gap:20px}
  .story-detail{margin-top:16px;padding-top:10px;font-size:10px}
- .story-bottom{left:22px;right:22px;bottom:14px;display:flex;flex-direction:column;align-items:stretch;gap:7px}
- .story-scroll{font-size:10px;min-height:24px}.story-chapters{gap:0;justify-content:space-between}
+ .story-bottom{left:22px;right:22px;bottom:max(14px,env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:10px}
+ .story-scroll{font-size:10px;min-height:44px}.story-chapters{display:none}
  .story-chapters button{font-size:9px;padding:8px 5px;min-height:44px}
  .story-illustration{font-size:9px;text-align:right}
  .story-fallback{left:24px;right:24px;top:55%;font-size:14px;padding:0}
 }
 @media(max-height:700px) and (min-width:701px){.story-header{height:84px;min-height:84px}.story-title{font-size:54px}.story-description{margin-top:16px}.story-content{inset:90px 0 85px}.story-cta{margin-top:18px}.story-bottom{bottom:12px}}
-@media(prefers-reduced-motion:reduce){.construction-story{height:100svh}.story-chapters::after{display:none}.story-scroll span{font-size:0}.story-scroll span::after{content:'Descoperă ce construim';font-size:11px}}
+@media(prefers-reduced-motion:reduce){.story-chapters::after{display:none}}
 /* Preserve a quiet reading field while the camera moves close to the structure. */
 .story-scene{mask-image:linear-gradient(90deg,transparent 26%,#000 47%)}
 .story-header{background:#f5f3ec}
@@ -54,3 +54,10 @@ main#continut{max-width:none}.home-sections{max-width:1536px;margin-inline:auto}
 .story-chapters,.story-illustration{background:#f5f3ec}
 .construction-story :is(a,button):focus-visible{outline-color:#28593d}
 .story-illustration{justify-self:end;padding:2px 5px}
+
+/* Short iPhone viewports still leave room for the house below the copy. */
+@media(max-width:700px) and (max-height:740px){
+ .story-content{top:88px}.story-title{font-size:34px}
+ .story-description{font-size:12px;margin-top:12px;max-width:40ch}
+ .story-cta{margin-top:12px}.story-detail{display:none}
+}

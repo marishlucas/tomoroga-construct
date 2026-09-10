@@ -23,7 +23,7 @@ npm run build:vercel
 
 ## Stack and interactions
 
-React, Vinext, TypeScript, Tailwind CSS, Three.js and GSAP. Native scrolling drives a reversible seven-chapter house assembly, with chapter controls and a static reduced-motion alternative. The scene is illustrative, not a factual model of a completed commission.
+React, Vinext, TypeScript, Tailwind CSS, Three.js and GSAP. Native scrolling drives a reversible seven-chapter house assembly, with desktop chapter controls and a reduced-motion alternative that changes chapters discretely on scroll. Mobile uses native page scrolling with the chapter-button bar hidden. The scene is illustrative, not a factual model of a completed commission.
 
 The story leads directly into the project enquiry. Gallery, process and material-detail sections are commented out in `components/home-sections.tsx`; their implementations remain in `components/archived-home-sections.tsx` for restoration.
 

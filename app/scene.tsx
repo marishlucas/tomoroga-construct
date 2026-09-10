@@ -30,6 +30,7 @@ export default function ArchitectureScene({command,onPhase,onReady,onUnavailable
   const state={floor:0,upper:0,roof:0,land:1,pipeBuild:0,groundBuild:1,upperBuild:1,roofBuild:1,cx:17,cy:13,cz:22,tx:0,ty:3,tz:0,zoom:1};
   let alive=true,visible=true,raf=0,lastPhase=-1,aspect=1,mobile=false;
   const story=el.closest<HTMLElement>('.construction-story')!;
+  const sticky=story.querySelector<HTMLElement>('.story-sticky')!;
   const render=()=>{if(!alive||raf||!visible||document.hidden)return;raf=requestAnimationFrame(()=>{raf=0;renderer.render(scene,camera)})};
   const update=()=>{
    [house.layers[1].position.y,house.layers[2].position.y,house.layers[3].position.y]=[state.floor,state.upper,state.roof];
@@ -89,15 +90,30 @@ export default function ArchitectureScene({command,onPhase,onReady,onUnavailable
   const io=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)render()});io.observe(el);
   const onVisibility=()=>render();document.addEventListener('visibilitychange',onVisibility);
   const media=gsap.matchMedia();
-  media.add({motion:'(prefers-reduced-motion:no-preference)',reduced:'(prefers-reduced-motion:reduce)'},context=>{
-   if(context.conditions?.reduced){
-    timeline.progress(0);phaseAt(0);
-    select.current=n=>{timeline.progress(chapterStops[n]);phaseAt(chapterStops[n])};return;
-   }
+  media.add({motion:'(prefers-reduced-motion:no-preference)',reduced:'(prefers-reduced-motion:reduce)',phone:'(max-width:700px)'},context=>{
+   const reduced=Boolean(context.conditions?.reduced);
+   const phone=Boolean(context.conditions?.phone);
    const driver={p:0};
-   const animation=gsap.to(driver,{p:1,duration:1,ease:'none',paused:true,onUpdate:()=>{timeline.progress(driver.p);phaseAt(driver.p)}});
-   const trigger=ScrollTrigger.create({trigger:story,start:'top top',end:'bottom bottom',animation,scrub:.45,invalidateOnRefresh:true});
-   select.current=n=>window.scrollTo({top:trigger.start+(trigger.end-trigger.start)*chapterStops[n],behavior:'smooth'});
+   let shownPhase=-1;
+   const sync=()=>{
+    const progress=driver.p;
+    if(reduced){
+     // Keep the scroll journey accessible without continuous camera or assembly motion.
+     const bounds=[0,.12,.28,.43,.58,.73,.91];
+     const phase=bounds.reduce((value,at,index)=>progress>=at?index:value,0);
+     if(phase!==shownPhase){shownPhase=phase;timeline.progress(chapterStops[phase])}
+    }else timeline.progress(progress);
+    phaseAt(progress);
+   };
+   const animation=gsap.to(driver,{p:1,duration:1,ease:'none',paused:true,onUpdate:sync});
+   const trigger=ScrollTrigger.create({
+    trigger:story,start:'top top',
+    // The stable sticky height keeps Safari's collapsing toolbar out of the scroll range.
+    end:()=>`+=${Math.max(1,story.offsetHeight-sticky.offsetHeight)}`,
+    animation,scrub:phone||reduced?true:.45,invalidateOnRefresh:true,
+   });
+   select.current=n=>window.scrollTo({top:trigger.start+(trigger.end-trigger.start)*chapterStops[n],behavior:reduced?'instant':'smooth'});
+   sync();
    return()=>{trigger.kill();animation.kill()};
   });
   const lost=(event:Event)=>{event.preventDefault();callbacks.current.onUnavailable()};
