@@ -1,0 +1,7 @@
+# Construction story
+
+User confirmed the immersive direction on 2026-09-10: “ok i kinda like it but keep it mind it has to be threejs ... consistency of the color pallete and the duo tone house rendering we have now”. This clarification controls the implementation: preserve the existing actual shader and use moving geometry, not generated image plates. The interrupted image-generation call returned no files to this thread; no raster comp is claimed as approved or used as build evidence.
+
+Mode: Persuade with an immersive construction demonstration. Full-viewport cream/forest-green scene, existing logo/Switzer identity, readable left text. Finished two-storey house first; separate layers; foundation/service detail; ground floor; upper floor; roof; finished home. Each chapter holds long enough to read. One GSAP timeline owns geometry, camera and chapter position. Native page scroll, reversible scrubbing, chapter jump controls, reduced-motion static chapter selection and WebGL fallback. All imagery is illustrative. Existing gallery, process, details and contact remain below this new story for this iteration.
+
+First viewport: complete house occupies right roughly 60%, left heading and project CTA, small header, discreet bottom chapter controls. Scene is full-bleed; content retains 1536px cap. Mobile stacks readable copy above the scene within a sticky viewport, shortening the scroll. No camera shake, independent image drift or duplicated load entrances. Preserve 250ms initial copy lead-in and 200ms scene wipe after its first rendered frame.

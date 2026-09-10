@@ -16,17 +16,20 @@ A Romanian company presentation website whose primary goal is to get prospective
 
 ## Capabilities and Constraints
 
-- The existing page presents services, company information, and email and phone contact links.
-- The interactive construction illustration progresses from Fundație through Structură and Arhitectură to Clădire. It should start at Fundație and assemble forward.
-- Visitors can select construction stages using the controls aligned to the right below the illustration; scrolling assembles the scene on desktop and mobile. Mobile uses a shorter scroll sequence so assembly completes while the model is visible. Respect the visitor's reduced-motion preference.
-- Preserve Romanian terminology and the existing company identity during page refinements.
-- The approved home-page continuation includes a construction-type gallery, proposed client process, interactive construction-detail hotspots, and a two-question enquiry that prepares an email draft.
+- The existing page presents services, company information, and email and phone contact links. Preserve Romanian terminology and the supplied company identity.
+- The approved opening is a full-screen, real Three.js construction story. Preserve the existing cream/green duotone ink shader and animate model geometry; the house is illustrative, not a verified company project.
+- The story starts with the complete house and follows seven chapters: Viziune, Straturi, Fundație, Parter, Etaj, Acoperiș, Acasă. Separate the layers, inspect foundation and service pipes, then rebuild the ground floor, upper floor and roof before returning to the finished home.
+- Assembly reveals slab pieces first, then staggered falling walls, a staircase built step by step, windows, and staggered roof deck, trusses and panels. Preserve a grounded terrace and exterior steps, connected walls and a real opening above the interior stair.
+- Native page scrolling drives a reversible GSAP sequence. Chapter controls jump to stable reading positions. Mobile uses a shorter sequence with readable copy above the scene. Respect reduced motion with static chapter selection; retain a useful WebGL fallback.
+- The Three.js scene is full-bleed. Story text and the continuation below retain a centered 1536px content cap. The former whole-page cap and foundation-first four-stage hero are superseded.
+- The story now leads directly to a two-step project enquiry. The gallery, process and construction-detail sections are commented out and their implementations retained for restoration. The user explicitly chose direct website submission to office@tomorogaconstruct.ro. Type and locality are required first; project stage, timing, description, area and budget are optional. Contact requires a name and one preferred method, phone or email. Delivery uses a server-side Resend endpoint and needs configured credentials plus a verified sender before launch. Do not claim an enquiry was sent without provider confirmation.
 - Generated imagery is authorized for this preview and must be identified as illustrative; do not present it as photographs of Tomoroga's actual employees or completed projects.
 - User requested GSAP motion: a continuous draggable gallery, a process marker that continues from its current position, and stable detail panels. Keep the process photograph stationary. Preserve touch, keyboard, and reduced-motion support.
-- Keep the complete page centered within a 1536px maximum width.
-- Apply new entrances only to the gallery, process, and detail sections. Exclude the entire enquiry/footer. The hero heading starts after a 250ms page-load pause, followed by its paragraph and buttons; the scene gets a 200ms wipe with a 450ms lead-in once its first rendered frame is ready on page load, independently of scrolling. Its caption and four phase controls stagger in after an 550ms lead-in with 35ms between items. Preserve its existing 3D assembly animation.
+- Apply continuation entrances only to the gallery, process, and detail sections. Exclude the entire enquiry/footer. Preserve the story's initial copy lead-in and scene reveal after the first rendered frame; exact timing and responsive composition live in the surface brief.
 - On reload, start at the top and clear the current section hash; normal in-page anchor navigation still works. Hero copy is concealed before the first paint until its delayed entrance is initialized.
-- Scroll entrances wait until each target crosses 75% of the viewport. Headings use 200ms character animations with 100ms total stagger; images wipe across their stationary frames, button groups rise with a tight stagger, and rules draw from their starting edge. Entrances play once and honor reduced motion.
+- Continuation entrances wait until each target crosses 75% of the viewport. Headings use 200ms character animations with 100ms total stagger; images wipe across stationary frames, button groups rise with a tight stagger, and rules draw from their starting edge. Entrances play once and honor reduced motion.
+
+- Foundation pipes are hidden in the initial finished-house view and remain hidden until their laying sequence. Every story chapter includes a project CTA. Trees move upward out of view and descend again with the scroll timeline. The small approach paving slab and material box near the tree are removed. All 299 assembly units use independent quick opacity fades alongside their staggered movement. The foundation chapter lays nine connected service routes in staggered sections before the floor slabs arrive: swept elbows, offset drain branches, risers, paired supply runs, coupling collars, a valve manifold and cleanout. Pipes pass through visible footing openings and raised runs have ground supports. The sequence reverses with scroll and preserves static reduced-motion chapter selection.
 
 ## Brand Commitments
 
@@ -41,7 +44,7 @@ The 3D scene is an illustrative construction study, not evidence of a completed 
 ## Product Principles
 
 - Help prospective clients understand the company's services and make contact.
-- Make the construction sequence understandable from its first stage.
+- Make the construction sequence understandable, connecting the finished result to its underlying stages.
 - Preserve company content and assets; substantiate any new factual claims.
 
 ## Open Decisions

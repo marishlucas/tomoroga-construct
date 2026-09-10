@@ -11,7 +11,8 @@
     "start": "wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint",
     "format": "oxfmt",
-    "build:vercel": "NITRO_PRESET=vercel vite build"
+    "build:vercel": "NITRO_PRESET=vercel vite build",
+    "test:enquiry": "node --test tests/enquiry.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

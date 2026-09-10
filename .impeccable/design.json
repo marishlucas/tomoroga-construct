@@ -1,0 +1,278 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-10T13:16:11.063934+00:00",
+  "title": "Design System: Tomoroga Construct",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Cream Paper",
+        "tonalRamp": [
+          "oklch(15% 0.02 90)",
+          "oklch(26% 0.02 90)",
+          "oklch(38% 0.02 90)",
+          "oklch(49% 0.02 90)",
+          "oklch(61% 0.02 90)",
+          "oklch(72% 0.02 90)",
+          "oklch(84% 0.02 90)",
+          "oklch(95% 0.02 90)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Green Ink",
+        "tonalRamp": [
+          "oklch(15% 0.03 145)",
+          "oklch(26% 0.03 145)",
+          "oklch(38% 0.03 145)",
+          "oklch(49% 0.03 145)",
+          "oklch(61% 0.03 145)",
+          "oklch(72% 0.03 145)",
+          "oklch(84% 0.03 145)",
+          "oklch(95% 0.03 145)"
+        ]
+      },
+      "green": {
+        "role": "primary",
+        "displayName": "Construction Green",
+        "tonalRamp": [
+          "oklch(15% 0.07 155)",
+          "oklch(26% 0.07 155)",
+          "oklch(38% 0.07 155)",
+          "oklch(49% 0.07 155)",
+          "oklch(61% 0.07 155)",
+          "oklch(72% 0.07 155)",
+          "oklch(84% 0.07 155)",
+          "oklch(95% 0.07 155)"
+        ]
+      },
+      "section-ink": {
+        "role": "neutral",
+        "displayName": "Deep Ink",
+        "tonalRamp": [
+          "oklch(15% 0.035 160)",
+          "oklch(26% 0.035 160)",
+          "oklch(38% 0.035 160)",
+          "oklch(49% 0.035 160)",
+          "oklch(61% 0.035 160)",
+          "oklch(72% 0.035 160)",
+          "oklch(84% 0.035 160)",
+          "oklch(95% 0.035 160)"
+        ]
+      },
+      "section-green": {
+        "role": "primary",
+        "displayName": "Forest Field",
+        "tonalRamp": [
+          "oklch(15% 0.06 155)",
+          "oklch(26% 0.06 155)",
+          "oklch(38% 0.06 155)",
+          "oklch(49% 0.06 155)",
+          "oklch(61% 0.06 155)",
+          "oklch(72% 0.06 155)",
+          "oklch(84% 0.06 155)",
+          "oklch(95% 0.06 155)"
+        ]
+      },
+      "section-line": {
+        "role": "neutral",
+        "displayName": "Sage Rule",
+        "tonalRamp": [
+          "oklch(15% 0.035 150)",
+          "oklch(26% 0.035 150)",
+          "oklch(38% 0.035 150)",
+          "oklch(49% 0.035 150)",
+          "oklch(61% 0.035 150)",
+          "oklch(72% 0.035 150)",
+          "oklch(84% 0.035 150)",
+          "oklch(95% 0.035 150)"
+        ]
+      },
+      "copy-muted": {
+        "role": "neutral",
+        "displayName": "Muted Green Copy",
+        "tonalRamp": [
+          "oklch(15% 0.03 145)",
+          "oklch(26% 0.03 145)",
+          "oklch(38% 0.03 145)",
+          "oklch(49% 0.03 145)",
+          "oklch(61% 0.03 145)",
+          "oklch(72% 0.03 145)",
+          "oklch(84% 0.03 145)",
+          "oklch(95% 0.03 145)"
+        ]
+      },
+      "selected-paper": {
+        "role": "neutral",
+        "displayName": "Selected Paper",
+        "tonalRamp": [
+          "oklch(15% 0.025 120)",
+          "oklch(26% 0.025 120)",
+          "oklch(38% 0.025 120)",
+          "oklch(49% 0.025 120)",
+          "oklch(61% 0.025 120)",
+          "oklch(72% 0.025 120)",
+          "oklch(84% 0.025 120)",
+          "oklch(95% 0.025 120)"
+        ]
+      },
+      "hover-paper": {
+        "role": "neutral",
+        "displayName": "Hover Paper",
+        "tonalRamp": [
+          "oklch(15% 0.02 120)",
+          "oklch(26% 0.02 120)",
+          "oklch(38% 0.02 120)",
+          "oklch(49% 0.02 120)",
+          "oklch(61% 0.02 120)",
+          "oklch(72% 0.02 120)",
+          "oklch(84% 0.02 120)",
+          "oklch(95% 0.02 120)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Story display",
+        "purpose": "Opening and chapter headings."
+      },
+      "headline": {
+        "displayName": "Section headline",
+        "purpose": "Continuation section hierarchy."
+      }
+    },
+    "shadows": [
+      {
+        "name": "mobile-navigation",
+        "value": "0 14px 25px #203d2c18",
+        "purpose": "Separates the open story navigation."
+      },
+      {
+        "name": "image-caption",
+        "value": "0 2px 12px #0009",
+        "purpose": "Text legibility over photography."
+      }
+    ],
+    "motion": [
+      {
+        "name": "control-transition",
+        "value": "200ms",
+        "purpose": "Primary controls and panel fades."
+      },
+      {
+        "name": "story-scrub",
+        "value": "0.45s",
+        "purpose": "Native scroll smoothing for the reversible construction timeline."
+      },
+      {
+        "name": "story-copy-lead-in",
+        "value": "250ms",
+        "purpose": "Initial heading entrance delay."
+      },
+      {
+        "name": "scene-wipe",
+        "value": "200ms after 450ms",
+        "purpose": "Initial scene reveal after first rendered frame."
+      },
+      {
+        "name": "gallery-selection",
+        "value": "650ms power3.inOut",
+        "purpose": "Gallery selection between image positions."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile",
+        "value": "700px"
+      },
+      {
+        "name": "tablet-story",
+        "value": "1050px"
+      },
+      {
+        "name": "wide-story",
+        "value": "1600px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Story action",
+      "kind": "button",
+      "refersTo": "button-story",
+      "description": "Primary story contact link.",
+      "html": "<a class=\"ds-story\" href=\"#contact\">Să discutăm proiectul tău<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M7 17 17 7M7 7h10v10\"/></svg></a>",
+      "css": ".ds-story{font-family:Switzer,Arial,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:28px;min-height:48px;padding:13px 20px;background:var(--green,#28593d);color:var(--paper,#f5f3ec);font-size:13px;border-radius:2px;text-decoration:none;transition:background .2s}.ds-story:hover{background:#173e2a}.ds-story:focus-visible{outline:2px solid #28593d;outline-offset:5px;}.ds-story svg{transition:transform .2s}.ds-story:hover svg{transform:translate(2px,-2px)}@media(prefers-reduced-motion:reduce){.ds-story,.ds-story svg{transition:none}}"
+    },
+    {
+      "name": "Outlined arrow",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Gallery and detail navigation control.",
+      "html": "<button class=\"ds-outline\" aria-label=\"Următor\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M7 17 17 7M7 7h10v10\"/></svg></button>",
+      "css": ".ds-outline{font-family:Switzer,Arial,sans-serif;cursor:pointer;display:inline-grid;place-items:center;width:48px;height:48px;padding:0;border:1px solid var(--section-line,#7c9583);border-radius:2px;background:transparent;color:var(--section-green,#214f39);transition:background .2s,color .2s}.ds-outline:hover{background:#e2e8dd}.ds-outline:focus-visible{outline:2px solid #88aa67;outline-offset:5px;}.ds-outline:disabled{cursor:default;opacity:.35}@media(prefers-reduced-motion:reduce){.ds-outline{transition:none}}"
+    },
+    {
+      "name": "Forward arrow",
+      "kind": "button",
+      "refersTo": "button-forward",
+      "description": "Gallery and detail navigation control.",
+      "html": "<button class=\"ds-forward\" aria-label=\"Următor\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M7 17 17 7M7 7h10v10\"/></svg></button>",
+      "css": ".ds-forward{font-family:Switzer,Arial,sans-serif;cursor:pointer;display:inline-grid;place-items:center;width:48px;height:48px;padding:0;border:1px solid var(--section-line,#7c9583);border-radius:2px;background:var(--section-green,#214f39);color:var(--paper,#f5f3ec);transition:background .2s,color .2s}.ds-forward:hover{background:#143b29}.ds-forward:focus-visible{outline:2px solid #88aa67;outline-offset:5px;}.ds-forward:disabled{cursor:default;opacity:.35}@media(prefers-reduced-motion:reduce){.ds-forward{transition:none}}"
+    },
+    {
+      "name": "Project choice",
+      "kind": "input",
+      "refersTo": "choice-selected",
+      "description": "Native radio tile matching the enquiry selection.",
+      "html": "<label class=\"ds-choice\"><input type=\"radio\" name=\"ds-project\" checked><span>Industrial</span></label>",
+      "css": ".ds-choice{font-family:Switzer,Arial,sans-serif;cursor:pointer;display:inline-block;position:relative;min-width:140px}.ds-choice input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0}.ds-choice span{display:flex;align-items:center;justify-content:center;min-height:50px;padding:12px 6px;border:1px solid var(--section-line,#7c9583);border-radius:2px;font-size:14px;color:var(--section-ink,#132c22);transition:background .2s,color .2s,border-color .2s}.ds-choice input:checked+span{background:var(--section-green,#214f39);color:var(--paper,#f5f3ec);border-color:var(--section-green,#214f39)}.ds-choice:hover span{border-color:var(--section-green,#214f39)}.ds-choice input:focus-visible+span{outline:2px solid var(--section-green,#214f39);outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-choice span{transition:none}}"
+    },
+    {
+      "name": "Chapter navigation",
+      "kind": "nav",
+      "refersTo": "chapter-selected",
+      "description": "Quiet chapter selection with active state.",
+      "html": "<nav class=\"ds-chapters\" aria-label=\"Etapele construcției\"><button>Viziune</button><button aria-current=\"step\">Straturi</button><button>Fundație</button></nav>",
+      "css": ".ds-chapters{background:var(--paper,#f5f3ec);display:flex;gap:4px;padding-bottom:5px;border-bottom:1px solid #28593d30}.ds-chapters button{font-family:Switzer,Arial,sans-serif;cursor:pointer;min-height:44px;padding:10px 12px;border:0;background:transparent;color:#4d5e50;font-size:11px;transition:background .2s,color .2s}.ds-chapters button[aria-current]{background:#e0e6d5;color:var(--section-green,#214f39)}.ds-chapters button:hover{background:#e5e8dc}.ds-chapters button:focus-visible{outline:2px solid #28593d;outline-offset:5px;}@media(prefers-reduced-motion:reduce){.ds-chapters button{transition:none}}"
+    },
+    {
+      "name": "Selected detail hotspot",
+      "kind": "custom",
+      "refersTo": "hotspot-selected",
+      "description": "Numbered detail control with selected outer ring.",
+      "html": "<button class=\"ds-hotspot\" aria-pressed=\"true\" aria-label=\"Detaliul 1\">01</button>",
+      "css": ".ds-hotspot{font-family:Switzer,Arial,sans-serif;cursor:pointer;position:relative;width:48px;height:48px;display:grid;place-items:center;border:1px solid var(--paper,#f5f3ec);border-radius:50%;color:var(--paper,#f5f3ec);background:#263d2a80;font-size:14px;transition:background .25s}.ds-hotspot:hover,.ds-hotspot[aria-pressed=true]{background:var(--section-green,#214f39)}.ds-hotspot[aria-pressed=true]::before{content:\"\";position:absolute;inset:-6px;border:1px solid #f5f3ec80;border-radius:50%}.ds-hotspot:focus-visible{outline:2px solid #88aa67;outline-offset:5px;}@media(prefers-reduced-motion:reduce){.ds-hotspot{transition:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Construction in Ink",
+    "overview": "Cream paper and forest-green ink connect the supplied company mark, restrained typography and illustrative construction imagery. The character is precise and spacious: large readable statements, fine rules, rectangular image fields and compact controls.\n\nThe visual signature is a real duotone architectural model. Its light, grain and cast shadows describe physical construction; interface surfaces remain predominantly flat. This is a scan of the approved cream/green direction and current implementation. The North Star names that existing direction; it is descriptive documentation, not a separate user-selected concept.",
+    "keyCharacteristics": [
+      "Cream paper and forest-green ink.",
+      "Switzer typography with large, tightly tracked headings.",
+      "Rectangular image fields, fine rules and restrained controls.",
+      "Motion explains construction and selection while preserving reading space."
+    ],
+    "rules": [
+      {
+        "name": "The Ink Continuity Rule",
+        "body": "Preserve the existing cream/green shader, including its grain and light-to-shadow mapping, when extending the architectural illustration. Material-specific pairs remain defined in `lib/house-model.ts`; they are not interchangeable UI accents.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do preserve the supplied logo and Switzer family.",
+      "Do preserve the existing duotone shader when changing the illustrative house.",
+      "Do use fine rules and tonal changes to distinguish interface states.",
+      "Do preserve visible keyboard focus, touch controls and reduced-motion alternatives.",
+      "Do keep imagery explicitly illustrative and contact paths usable."
+    ],
+    "donts": [
+      "Don't replace the real Three.js construction story with raster image plates.",
+      "Don't introduce a new palette or photorealistic material treatment into the house.",
+      "Don't imply generated imagery depicts verified company projects or staff.",
+      "Don't add entrance animations to the enquiry/footer."
+    ]
+  }
+}
