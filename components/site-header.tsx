@@ -11,6 +11,31 @@ export default function SiteHeader() {
   const toggle = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash) return;
+    let cancelled = false;
+    let frame = 0;
+    // A streamed page can receive its anchor before its final layout is ready.
+    const alignAnchor = () => {
+      void document.fonts.ready.then(() => {
+        if (cancelled) return;
+        frame = requestAnimationFrame(() => {
+          if (window.location.hash !== hash) return;
+          document
+            .getElementById(hash.slice(1))
+            ?.scrollIntoView({ behavior: 'instant' });
+        });
+      });
+    };
+    if (document.readyState === 'complete') alignAnchor();
+    else window.addEventListener('load', alignAnchor, { once: true });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+      window.removeEventListener('load', alignAnchor);
+    };
+  }, []);
+  useEffect(() => {
     if (!open) return;
     const key = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
