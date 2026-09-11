@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 
 export default function SiteHeader() {
@@ -23,7 +22,10 @@ export default function SiteHeader() {
       if (!header.current?.contains(event.target as Node)) setOpen(false);
     };
     const focus = (event: FocusEvent) => {
-      if (!header.current?.contains(event.relatedTarget as Node))
+      if (
+        event.relatedTarget &&
+        !header.current?.contains(event.relatedTarget as Node)
+      )
         setOpen(false);
     };
     const node = header.current;
@@ -40,7 +42,7 @@ export default function SiteHeader() {
   return (
     <header className="site-navigation-header" ref={header}>
       <div className="site-navigation-inner">
-        <Link
+        <a
           href={home ? '#continut' : '/'}
           className="brand"
           aria-label="Tomoroga Construct — Acasă"
@@ -53,32 +55,32 @@ export default function SiteHeader() {
             height={179}
             priority
           />
-        </Link>
+        </a>
         <nav
           id="site-navigation"
           className={open ? 'site-links is-open' : 'site-links'}
           aria-label="Navigare principală"
         >
-          <Link
-            href="/"
+          <a
+            href={home ? '#continut' : '/'}
             aria-current={home ? 'page' : undefined}
             onClick={() => setOpen(false)}
           >
             Acasă
-          </Link>
-          <Link
+          </a>
+          <a
             href="/portofoliu"
             aria-current={pathname === '/portofoliu' ? 'page' : undefined}
             onClick={() => setOpen(false)}
           >
             Portofoliu
-          </Link>
-          <Link
+          </a>
+          <a
             href={home ? '#contact' : '/#contact'}
             onClick={() => setOpen(false)}
           >
             Cere o ofertă <ArrowUpRight size={17} aria-hidden="true" />
-          </Link>
+          </a>
         </nav>
         <button
           className="site-menu-toggle"

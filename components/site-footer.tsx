@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { ArrowUpRight, ArrowUp } from 'lucide-react';
 
 export default function SiteFooter() {
@@ -12,7 +11,7 @@ export default function SiteFooter() {
             <span>Antrepriză generală, din 2004.</span>
           </p>
           <nav aria-label="Navigare subsol">
-            <Link href="/portofoliu">Portofoliu</Link>
+            <a href="/portofoliu">Portofoliu</a>
             <a
               href="https://www.facebook.com/tomorogaconstruct2004/"
               target="_blank"

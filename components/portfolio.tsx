@@ -2,7 +2,6 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import {
   ArrowLeft,
   ArrowRight,
@@ -358,9 +357,9 @@ export default function Portfolio() {
       </div>
       <div className="portfolio-contact">
         <h2>Ai un proiect?</h2>
-        <Link href="/#contact">
+        <a href="/#contact">
           Cere o ofertă <ArrowUpRight size={24} />
-        </Link>
+        </a>
       </div>
       <dialog
         className="portfolio-lightbox"
